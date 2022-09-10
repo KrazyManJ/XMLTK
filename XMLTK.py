@@ -37,15 +37,13 @@ def parse(filepath: str):
             w.pack()
             return
         match parseNamespace(placer.tag):
-            case "pack":
-                w.pack(placer.attrib)
-            case "grid":
-                w.grid(placer.attrib)
-            case "place":
-                w.place(placer.attrib)
-            case _:
-                w.pack()
+            case "pack": w.pack(placer.attrib)
+            case "grid": w.grid(placer.attrib)
+            case "place": w.place(placer.attrib)
+            case _: w.pack()
         gridConfig(w, e)
+
+
 
     def applyChild(parentelem: Widget | Tk, xmldata: Element):
         for child in [ch for ch in xmldata if parseNamespace(ch.tag) not in BLACKLIST_TAGS]:
@@ -61,29 +59,26 @@ def parse(filepath: str):
         if "textvariable" in data: data["textvariable"] = Variables[data["textvariable"]]
 
         match xmlelem.tag:
-            case "Toplevel":
-                pass
-            case "Menu":
+            case "Toplevel","Menu":
                 pass
             case _:
                 gridPackPlace(widget, xmlelem)
-                pass
         count = childcount(xmlelem)
         if count == 0:
             if xmlelem.text is not None: xmlelem.attrib["text"] = xmlelem.text.strip()
         widget.configure(xmlelem.attrib)
         return count > 0
 
-    win = tkinter.Tk()
+    Win = tkinter.Tk()
 
     WIN_IGNORE_ATTRS = ["title", "geometry", "icon", "resizable", "xmlns"]
     PLACE_TAGS = ["pack", "grid", "place"]
     GRID_CONFIG_TAGS = ["rowconfig", "columnconfig"]
     BLACKLIST_TAGS = PLACE_TAGS + GRID_CONFIG_TAGS + ["Variable"]
     ROOT_ATTRIBS = {
-        "geometry": win.geometry,
-        "title": win.title,
-        "icon": win.iconbitmap,
+        "geometry": Win.geometry,
+        "title": Win.title,
+        "icon": Win.iconbitmap,
     }
 
     Variables: dict[str, Variable] = {}
@@ -92,10 +87,10 @@ def parse(filepath: str):
     for key in ROOT_ATTRIBS.keys():
         if key in root.attrib: ROOT_ATTRIBS[key](root.attrib[key])
 
-    win.configure({k: v for k, v in root.attrib.items() if k not in WIN_IGNORE_ATTRS})
+    Win.configure({k: v for k, v in root.attrib.items() if k not in WIN_IGNORE_ATTRS})
 
     for child in [child for child in root if parseNamespace(child.tag) == "Variable"]:
-        Variables[child.attrib.get("name")] = Variable(master=win,name=child.attrib.get("name"),value=child.attrib.get("value"))
+        Variables[child.attrib.get("name")] = Variable(master=Win,name=child.attrib.get("name"),value=child.attrib.get("value"))
 
-    applyChild(win,root)
-    return win, Variables
+    applyChild(Win,root)
+    return Win, Variables
