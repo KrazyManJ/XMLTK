@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="Tkinter">
+    <xs:element name="Tk" type="tk"/>
+
+    <xs:complexType name="pack">
+        <xs:attribute name="padx"/>
+        <xs:attribute name="pady"/>
+        <xs:attribute name="ipadx"/>
+        <xs:attribute name="ipady"/>
+        <xs:attribute name="fill"/>
+        <xs:attribute name="expand" type="xs:boolean"/>
+        <xs:attribute name="side"/>
+        <xs:attribute name="anchor"/>
+    </xs:complexType>
+
+    <xs:complexType name="grid">
+        <xs:attribute name="padx"/>
+        <xs:attribute name="pady"/>
+        <xs:attribute name="ipadx"/>
+        <xs:attribute name="ipady"/>
+        <xs:attribute name="row"/>
+        <xs:attribute name="column"/>
+        <xs:attribute name="columnspan"/>
+        <xs:attribute name="rowspan"/>
+        <xs:attribute name="sticky"/>
+    </xs:complexType>
+
+    <xs:complexType name="packable">
+        <xs:complexContent>
+            <xs:extension base="widget">
+                <xs:choice maxOccurs="unbounded" minOccurs="0">
+                    <xs:element name="pack" type="pack"/>
+                    <xs:element name="grid" type="grid"/>
+                    <xs:element name="place" type="widget"/>
+
+                    <xs:element name="columnconfig" type="widget"/>
+                    <xs:element name="rowconfig" type="widget"/>
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="widget">
+        <xs:choice maxOccurs="unbounded">
+            <!-- Tkinter elements -->
+            <xs:element name="Button" type="packable"/>
+            <xs:element name="Canvas" type="packable"/>
+            <xs:element name="Checkbutton" type="packable"/>
+            <xs:element name="Entry" type="packable"/>
+            <xs:element name="Frame" type="packable"/>
+            <xs:element name="Label" type="packable"/>
+            <xs:element name="LabelFrame" type="packable"/>
+            <xs:element name="Menu" type="packable"/>
+            <xs:element name="Menubutton" type="packable"/>
+            <xs:element name="PanedWindow" type="packable"/>
+            <xs:element name="Radiobutton" type="packable"/>
+            <xs:element name="Scale" type="packable"/>
+            <xs:element name="Scrollbar" type="packable"/>
+            <xs:element name="Spinbox" type="packable"/>
+            <xs:element name="Combobox" type="packable"/>
+            <xs:element name="Notebook" type="packable"/>
+            <xs:element name="Progressbar" type="packable"/>
+            <xs:element name="Separator" type="packable"/>
+            <xs:element name="Sizegrip" type="packable"/>
+            <xs:element name="Treeview" type="packable"/>
+            <xs:element name="Toplevel" type="tk"/>
+
+
+        </xs:choice>
+        <xs:anyAttribute/>
+    </xs:complexType>
+
+    <xs:complexType name="Variable">
+        <xs:attribute name="name" use="required"/>
+        <xs:attribute name="value" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="tk">
+        <xs:complexContent>
+            <xs:extension base="widget">
+                <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                    <xs:element name="Variable" type="Variable"/>
+                </xs:sequence>
+                <xs:attribute name="title"/>
+                <xs:attribute name="resizable"/>
+                <xs:attribute name="icon"/>
+                <xs:attribute name="geometry"/>
+                <xs:attribute name="background" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+
+
+</xs:schema>
