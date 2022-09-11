@@ -1,8 +1,9 @@
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 import tkinter
-from tkinter import Tk, Widget, Variable
+from tkinter import Tk, Widget, Variable, PhotoImage
 from dataclasses import dataclass
+from typing import Callable
 
 __all__ = ["parse"]
 
@@ -16,8 +17,11 @@ class XmlTk:
     def mainloop(self, n: int = 0):
         self.Tk.mainloop(n)
 
+    def getWidgetById(self, id: str):
+        return self.IDWidgets[id]
 
-def parse(filepath: str):
+
+def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | None = None):
     def parseNamespace(tag: str):
         return tag.split("}")[1] if tag.__contains__("}") else tag
 
@@ -63,11 +67,17 @@ def parse(filepath: str):
         data: dict[str, any] = xmlelem.attrib
 
         if "font" in data: data["font"] = tuple(data["font"].split(";", 3))
-        if "textvariable" in data:
-            data["textvariable"] = Variables[data["textvariable"]]
         if "id" in data:
             IDWidgets[data["id"]] = widget
             del data["id"]
+        if "command" in data and parseNamespace(xmlelem.tag) == "Button":
+            fct = functions[data["command"]]
+            data["command"] = lambda: fct(Win, widget)
+        if "image" in data:
+            path = data["image"]
+            photo = PhotoImage(file=path)
+            data["image"] = photo
+            widget.image = photo
 
         match xmlelem.tag:
             case "Toplevel", "Menu":
@@ -99,6 +109,9 @@ def parse(filepath: str):
 
     for key in ROOT_ATTRIBS.keys():
         if key in root.attrib: ROOT_ATTRIBS[key](root.attrib[key])
+    if "resizable" in root.attrib:
+        values = root.attrib["resizable"].split(" ", 2)
+        Win.resizable(values[0].lower() == "true", values[1].lower() == "true")
 
     Win.configure({k: v for k, v in root.attrib.items() if k not in WIN_IGNORE_ATTRS})
 
