@@ -12,16 +12,18 @@ __all__ = ["parse"]
 class XmlTk:
     Tk: Tk
     Variables: dict[str, Variable]
-    IDWidgets: dict[str, Widget]
+    __IDWidgets: dict[str, Widget]
 
     def mainloop(self, n: int = 0):
         self.Tk.mainloop(n)
 
-    def getWidgetById(self, id: str):
-        return self.IDWidgets[id]
+    def getWidgetById(self, id: str) -> Widget | None:
+        return self.__IDWidgets.get(id,None)
 
 
 def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | None = None):
+    if functions is None:
+        functions = {}
     def parseNamespace(tag: str):
         return tag.split("}")[1] if tag.__contains__("}") else tag
 
@@ -71,13 +73,19 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
             IDWidgets[data["id"]] = widget
             del data["id"]
         if "command" in data and parseNamespace(xmlelem.tag) == "Button":
-            fct = functions[data["command"]]
-            data["command"] = lambda: fct(Win, widget)
+            if data["command"] in functions:
+                fct = functions[data["command"]]
+                data["command"] = lambda: fct(Win, widget)
+            else:
+                del data["command"]
         if "image" in data:
             path = data["image"]
             photo = PhotoImage(file=path)
             data["image"] = photo
             widget.image = photo
+        if "from" in data and parseNamespace(xmlelem.tag) in ["Spinbox","Scale"]:
+            data["from_"] = data["from"]
+            del data["from"]
 
         match xmlelem.tag:
             case "Toplevel", "Menu":

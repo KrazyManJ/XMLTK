@@ -9,20 +9,21 @@ Instead of typing nearly hundreds lines of code to design GUI, with this
 package you are able to write it just like web page with html.
 
 
-## Basic structure with start
+## Example
 
 `app.xml`
 ```xml
 <!-- Main window tag -->
 <Tk title="Example App">
     <!-- All elements in window, with attributes as settings -->
-    <Label font="Arial; 20">
+    <Label font="Arial; 20" fg="red">
         <!-- Text in element usually means its text value -->
         This is an example app in TKinter using XMLTK
         <!-- Geometry placement function, when not defined, pack is used in default -->
         <pack fill="x" padx="10" pady="10"/>
     </Label>
-    <Button>
+    <!-- defining button to run "close" command -->
+    <Button command="close">
         Ok thanks, I understand!
         <pack fill="x" padx="10" pady="10"/>
     </Button>
@@ -32,8 +33,14 @@ package you are able to write it just like web page with html.
 ```python
 import XMLTK
 
+#Function to close window
+def button_use(win, elem):
+    win.destroy()
+
 if __name__ == '__main__':
-    app = XMLTK.parse("app.xml")
+    app = XMLTK.parse("app.xml",
+      { "close": button_use } # Adding function to click on close command 
+    )
     app.mainloop() # To run app
 ```
 
@@ -52,10 +59,9 @@ if __name__ == '__main__':
 - [X] Message
 - [ ] OptionMenu
 - [ ] PanedWindow
-- [ ] Radiobutton
-- [ ] Scale
+- [X] Radiobutton
+- [X] Scale
 - [ ] Scrollbar
-- [ ] ScrolledText
-- [ ] Spinbox
+- [X] Spinbox
 - [ ] Text
-- [ ] Root a Toplevel
+- [ ] Toplevel
