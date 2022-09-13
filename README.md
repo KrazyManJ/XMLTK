@@ -53,7 +53,7 @@ if __name__ == '__main__':
 - [X] Frame
 - [X] Label
 - [X] LabelFrame
-- [ ] Listbox
+- [X] Listbox
 - [ ] Menu
 - [ ] Menubutton
 - [X] Message

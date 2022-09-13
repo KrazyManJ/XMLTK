@@ -99,6 +99,19 @@
             <xs:element name="PanedWindow" type="PanedWindow"/>
         </xs:choice>
     </xs:complexType>
+    <xs:complexType name="Packable">
+        <xs:sequence>
+            <xs:choice minOccurs="0">
+                <xs:element name="pack" type="Pack"/>
+                <xs:element name="grid" type="Grid"/>
+                <xs:element name="place" type="Place"/>
+            </xs:choice>
+            <xs:choice minOccurs="0">
+                <xs:element name="columnconfig" type="RowColumnConfig"/>
+                <xs:element name="rowconfig" type="RowColumnConfig"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
     <xs:complexType name="Widget">
         <xs:complexContent>
             <xs:extension base="BaseWidget">
@@ -343,7 +356,10 @@
     </xs:complexType>
     <xs:complexType name="Listbox">
         <xs:complexContent>
-            <xs:extension base="Widget">
+            <xs:extension base="Packable">
+                <xs:choice>
+                    <xs:element name="Line"/>
+                </xs:choice>
                 <xs:attribute name="activestyle"/>
                 <xs:attribute name="background"/>
                 <xs:attribute name="bd"/>

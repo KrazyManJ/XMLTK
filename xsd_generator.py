@@ -44,7 +44,24 @@ def generate():
     for w in Widget.__subclasses__(): Xml+=f'<xs:element name="{w.__name__}" type="{w.__name__}"/>'
     Xml += f'</xs:choice></xs:complexType>'
 
-    # WIDGET TYPE (PACKABLE)
+    # PACKABLE ()
+    Xml += """
+    <xs:complexType name="Packable">
+        <xs:sequence>
+            <xs:choice minOccurs="0">
+                <xs:element name="pack" type="Pack"/>
+                <xs:element name="grid" type="Grid"/>
+                <xs:element name="place" type="Place"/>
+            </xs:choice>
+            <xs:choice minOccurs="0">
+                <xs:element name="columnconfig" type="RowColumnConfig"/>
+                <xs:element name="rowconfig" type="RowColumnConfig"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
+    """.strip().replace("\n","").replace("    ","")
+
+    # WIDGET TYPE
     Xml += """
     <xs:complexType name="Widget">
         <xs:complexContent>
@@ -67,7 +84,16 @@ def generate():
 
     # WIDGET WITH PARAMS
     for w in Widget.__subclasses__():
-        Xml += f'<xs:complexType name="{w.__name__}"><xs:complexContent><xs:extension base="Widget">'
+        match w.__name__:
+            case "Listbox":
+                parent = "Packable"
+            case _:
+                parent = "Widget"
+        Xml += f'<xs:complexType name="{w.__name__}"><xs:complexContent><xs:extension base="{parent}">'
+        match w.__name__:
+            case "Listbox":
+                Xml += '<xs:choice><xs:element name="Line"/></xs:choice>'
+            case _: pass
         for attr in w().configure().keys(): Xml += f'<xs:attribute name="{attr}"/>'
         Xml += '</xs:extension></xs:complexContent></xs:complexType>'
 

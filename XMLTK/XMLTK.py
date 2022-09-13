@@ -62,7 +62,14 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
         for ch in [ch for ch in xmldata if parseNamespace(ch.tag) not in BLACKLIST_TAGS]:
             fc = getattr(tkinter, parseNamespace(ch.tag))
             elem: Widget = fc(parentelem)
-            if configureWidget(elem, ch): applyChild(elem, ch)
+            if configureWidget(elem, ch):
+                match parseNamespace(ch.tag):
+                    case "Listbox":
+                        print("Listbox")
+                        for line in [l for l in ch if parseNamespace(l.tag) == "Line"]:
+                            elem.insert("end", line.text if line.text is not None else "")
+                    case _:
+                        applyChild(elem, ch)
 
     def configureWidget(widget: Widget, xmlelem: Element) -> bool:
 
@@ -79,13 +86,9 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
             else:
                 del data["command"]
         if "image" in data:
-            path = data["image"]
-            photo = PhotoImage(file=path)
+            photo = PhotoImage(file=data["image"])
             data["image"] = photo
             widget.image = photo
-        if "from" in data and parseNamespace(xmlelem.tag) in ["Spinbox","Scale"]:
-            data["from_"] = data["from"]
-            del data["from"]
 
         match xmlelem.tag:
             case "Toplevel", "Menu":
