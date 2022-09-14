@@ -4,6 +4,146 @@
         <xs:attribute name="name" use="required"/>
         <xs:attribute name="value"/>
     </xs:complexType>
+    <xs:complexType name="ConfigClass">
+        <xs:attribute name="name" use="required"/>
+        <xs:attribute name="activebackground"/>
+        <xs:attribute name="activeforeground"/>
+        <xs:attribute name="anchor" type="Anchor"/>
+        <xs:attribute name="background"/>
+        <xs:attribute name="bd"/>
+        <xs:attribute name="bg"/>
+        <xs:attribute name="bitmap"/>
+        <xs:attribute name="borderwidth"/>
+        <xs:attribute name="command"/>
+        <xs:attribute name="compound"/>
+        <xs:attribute name="cursor"/>
+        <xs:attribute name="default"/>
+        <xs:attribute name="disabledforeground"/>
+        <xs:attribute name="fg"/>
+        <xs:attribute name="font"/>
+        <xs:attribute name="foreground"/>
+        <xs:attribute name="height"/>
+        <xs:attribute name="highlightbackground"/>
+        <xs:attribute name="highlightcolor"/>
+        <xs:attribute name="highlightthickness"/>
+        <xs:attribute name="image"/>
+        <xs:attribute name="justify" type="Justify"/>
+        <xs:attribute name="overrelief"/>
+        <xs:attribute name="padx"/>
+        <xs:attribute name="pady"/>
+        <xs:attribute name="relief" type="Relief"/>
+        <xs:attribute name="repeatdelay"/>
+        <xs:attribute name="repeatinterval"/>
+        <xs:attribute name="state" type="State"/>
+        <xs:attribute name="takefocus"/>
+        <xs:attribute name="text"/>
+        <xs:attribute name="textvariable"/>
+        <xs:attribute name="underline"/>
+        <xs:attribute name="width"/>
+        <xs:attribute name="wraplength"/>
+        <xs:attribute name="closeenough"/>
+        <xs:attribute name="confine"/>
+        <xs:attribute name="insertbackground"/>
+        <xs:attribute name="insertborderwidth"/>
+        <xs:attribute name="insertofftime"/>
+        <xs:attribute name="insertontime"/>
+        <xs:attribute name="insertwidth"/>
+        <xs:attribute name="offset"/>
+        <xs:attribute name="scrollregion"/>
+        <xs:attribute name="selectbackground"/>
+        <xs:attribute name="selectborderwidth"/>
+        <xs:attribute name="selectforeground"/>
+        <xs:attribute name="xscrollcommand"/>
+        <xs:attribute name="xscrollincrement"/>
+        <xs:attribute name="yscrollcommand"/>
+        <xs:attribute name="yscrollincrement"/>
+        <xs:attribute name="indicatoron"/>
+        <xs:attribute name="offrelief"/>
+        <xs:attribute name="offvalue"/>
+        <xs:attribute name="onvalue"/>
+        <xs:attribute name="selectcolor"/>
+        <xs:attribute name="selectimage"/>
+        <xs:attribute name="tristateimage"/>
+        <xs:attribute name="tristatevalue"/>
+        <xs:attribute name="variable"/>
+        <xs:attribute name="disabledbackground"/>
+        <xs:attribute name="exportselection"/>
+        <xs:attribute name="invalidcommand"/>
+        <xs:attribute name="invcmd"/>
+        <xs:attribute name="readonlybackground"/>
+        <xs:attribute name="show"/>
+        <xs:attribute name="validate"/>
+        <xs:attribute name="validatecommand"/>
+        <xs:attribute name="vcmd"/>
+        <xs:attribute name="class"/>
+        <xs:attribute name="colormap"/>
+        <xs:attribute name="container"/>
+        <xs:attribute name="visual"/>
+        <xs:attribute name="activestyle"/>
+        <xs:attribute name="selectmode"/>
+        <xs:attribute name="setgrid"/>
+        <xs:attribute name="listvariable"/>
+        <xs:attribute name="activeborderwidth"/>
+        <xs:attribute name="postcommand"/>
+        <xs:attribute name="tearoff"/>
+        <xs:attribute name="tearoffcommand"/>
+        <xs:attribute name="title"/>
+        <xs:attribute name="type"/>
+        <xs:attribute name="direction"/>
+        <xs:attribute name="menu"/>
+        <xs:attribute name="aspect"/>
+        <xs:attribute name="value"/>
+        <xs:attribute name="bigincrement"/>
+        <xs:attribute name="digits"/>
+        <xs:attribute name="from"/>
+        <xs:attribute name="label"/>
+        <xs:attribute name="length"/>
+        <xs:attribute name="orient"/>
+        <xs:attribute name="resolution"/>
+        <xs:attribute name="showvalue"/>
+        <xs:attribute name="sliderlength"/>
+        <xs:attribute name="sliderrelief"/>
+        <xs:attribute name="tickinterval"/>
+        <xs:attribute name="to"/>
+        <xs:attribute name="troughcolor"/>
+        <xs:attribute name="activerelief"/>
+        <xs:attribute name="elementborderwidth"/>
+        <xs:attribute name="jump"/>
+        <xs:attribute name="autoseparators"/>
+        <xs:attribute name="blockcursor"/>
+        <xs:attribute name="endline"/>
+        <xs:attribute name="inactiveselectbackground"/>
+        <xs:attribute name="insertunfocussed"/>
+        <xs:attribute name="maxundo"/>
+        <xs:attribute name="spacing1"/>
+        <xs:attribute name="spacing2"/>
+        <xs:attribute name="spacing3"/>
+        <xs:attribute name="startline"/>
+        <xs:attribute name="tabs"/>
+        <xs:attribute name="tabstyle"/>
+        <xs:attribute name="undo"/>
+        <xs:attribute name="wrap"/>
+        <xs:attribute name="buttonbackground"/>
+        <xs:attribute name="buttoncursor"/>
+        <xs:attribute name="buttondownrelief"/>
+        <xs:attribute name="buttonuprelief"/>
+        <xs:attribute name="format"/>
+        <xs:attribute name="increment"/>
+        <xs:attribute name="values"/>
+        <xs:attribute name="labelanchor"/>
+        <xs:attribute name="labelwidget"/>
+        <xs:attribute name="handlepad"/>
+        <xs:attribute name="handlesize"/>
+        <xs:attribute name="opaqueresize"/>
+        <xs:attribute name="proxybackground"/>
+        <xs:attribute name="proxyborderwidth"/>
+        <xs:attribute name="proxyrelief"/>
+        <xs:attribute name="sashcursor"/>
+        <xs:attribute name="sashpad"/>
+        <xs:attribute name="sashrelief"/>
+        <xs:attribute name="sashwidth"/>
+        <xs:attribute name="showhandle"/>
+    </xs:complexType>
     <xs:simpleType name="State" final="restriction">
         <xs:restriction base="xs:string">
             <xs:enumeration value="normal"/>
@@ -47,11 +187,20 @@
             <xs:enumeration value="both"/>
         </xs:restriction>
     </xs:simpleType>
+    <xs:simpleType name="Side" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="right"/>
+            <xs:enumeration value="left"/>
+            <xs:enumeration value="top"/>
+            <xs:enumeration value="bottom"/>
+        </xs:restriction>
+    </xs:simpleType>
     <xs:complexType name="Tk">
         <xs:complexContent>
             <xs:extension base="BaseWidget">
                 <xs:sequence maxOccurs="unbounded" minOccurs="0">
                     <xs:element name="Variable" type="Variable"/>
+                    <xs:element name="ConfigClass" type="ConfigClass"/>
                 </xs:sequence>
                 <xs:attribute name="title"/>
                 <xs:attribute name="geometry"/>
@@ -107,7 +256,7 @@
         <xs:attribute name="ipady"/>
         <xs:attribute name="padx"/>
         <xs:attribute name="pady"/>
-        <xs:attribute name="side"/>
+        <xs:attribute name="side" type="Side"/>
     </xs:complexType>
     <xs:complexType name="Place">
         <xs:attribute name="x"/>
@@ -142,7 +291,19 @@
             <xs:element name="PanedWindow" type="PanedWindow"/>
         </xs:choice>
     </xs:complexType>
-    <xs:complexType name="Packable">$<xs:sequence><xs:choice minOccurs="0"><xs:element name="pack" type="Pack"/><xs:element name="grid" type="Grid"/><xs:element name="place" type="Place"/></xs:choice><xs:choice minOccurs="0"><xs:element name="columnconfig" type="RowColumnConfig"/><xs:element name="rowconfig" type="RowColumnConfig"/></xs:choice></xs:sequence></xs:complexType>
+    <xs:complexType name="Packable">
+        <xs:sequence>
+            <xs:choice minOccurs="0">
+                <xs:element name="pack" type="Pack"/>
+                <xs:element name="grid" type="Grid"/>
+                <xs:element name="place" type="Place"/>
+            </xs:choice>
+            <xs:choice minOccurs="0">
+                <xs:element name="columnconfig" type="RowColumnConfig"/>
+                <xs:element name="rowconfig" type="RowColumnConfig"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
     <xs:complexType name="Widget">
         <xs:complexContent>
             <xs:extension base="BaseWidget">
@@ -198,6 +359,8 @@
                 <xs:attribute name="underline"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -233,6 +396,8 @@
                 <xs:attribute name="xscrollincrement"/>
                 <xs:attribute name="yscrollcommand"/>
                 <xs:attribute name="yscrollincrement"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -280,6 +445,8 @@
                 <xs:attribute name="variable"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -322,6 +489,8 @@
                 <xs:attribute name="vcmd"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="xscrollcommand"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -346,6 +515,8 @@
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="visual"/>
                 <xs:attribute name="width"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -382,6 +553,8 @@
                 <xs:attribute name="underline"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -419,6 +592,8 @@
                 <xs:attribute name="xscrollcommand"/>
                 <xs:attribute name="yscrollcommand"/>
                 <xs:attribute name="listvariable"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -445,6 +620,8 @@
                 <xs:attribute name="tearoffcommand"/>
                 <xs:attribute name="title"/>
                 <xs:attribute name="type"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -484,6 +661,8 @@
                 <xs:attribute name="underline"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -511,6 +690,8 @@
                 <xs:attribute name="text"/>
                 <xs:attribute name="textvariable"/>
                 <xs:attribute name="width"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -557,6 +738,8 @@
                 <xs:attribute name="variable"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -596,6 +779,8 @@
                 <xs:attribute name="troughcolor"/>
                 <xs:attribute name="variable"/>
                 <xs:attribute name="width"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -622,6 +807,8 @@
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="troughcolor"/>
                 <xs:attribute name="width"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -672,6 +859,8 @@
                 <xs:attribute name="wrap"/>
                 <xs:attribute name="xscrollcommand"/>
                 <xs:attribute name="yscrollcommand"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -727,6 +916,8 @@
                 <xs:attribute name="width"/>
                 <xs:attribute name="wrap"/>
                 <xs:attribute name="xscrollcommand"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -757,6 +948,8 @@
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="visual"/>
                 <xs:attribute name="width"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -783,6 +976,8 @@
                 <xs:attribute name="sashwidth"/>
                 <xs:attribute name="showhandle"/>
                 <xs:attribute name="width"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="configclass"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

@@ -74,6 +74,10 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
 
         data: dict[str, any] = xmlelem.attrib
 
+        if "configclass" in data and data["configclass"] in ConfigClasses:
+            data.update(ConfigClasses[data["configclass"]])
+            del data["configclass"]
+
         if "font" in data: data["font"] = tuple(data["font"].split(";", 3))
         if "id" in data:
             IDWidgets[data["id"]] = widget
@@ -106,7 +110,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
     WIN_IGNORE_ATTRS = ["title", "geometry", "icon", "resizable", "xmlns"]
     PLACE_TAGS = ["pack", "grid", "place"]
     GRID_CONFIG_TAGS = ["rowconfig", "columnconfig"]
-    BLACKLIST_TAGS = PLACE_TAGS + GRID_CONFIG_TAGS + ["Variable"]
+    BLACKLIST_TAGS = PLACE_TAGS + GRID_CONFIG_TAGS + ["Variable","ConfigClass"]
     ROOT_ATTRIBS = {
         "geometry": Win.geometry,
         "title": Win.title,
@@ -115,6 +119,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
 
     Variables: dict[str, Variable] = {}
     IDWidgets: dict[str, Widget] = {}
+    ConfigClasses: dict[str,dict[str,any]] = {}
     root = ET.parse(filepath).getroot()
 
     for key in ROOT_ATTRIBS.keys():
@@ -128,6 +133,8 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
     for child in [child for child in root if parseNamespace(child.tag) == "Variable"]:
         Variables[child.attrib.get("name")] = Variable(master=Win, name=child.attrib.get("name"),
                                                        value=child.attrib.get("value"))
+    for child in [child for child in root if parseNamespace(child.tag) == "ConfigClass"]:
+        ConfigClasses[child.attrib.get("name")] = {k: v for k, v in child.attrib.items() if k not in ["name"]}
 
     applyChild(Win, root)
     return XmlTk(Win, Variables, IDWidgets)

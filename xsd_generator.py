@@ -11,7 +11,8 @@ def generate():
         ("Justify", ["left", "right", "center"]),
         ("Relief", ["raised", "sunken", "groove", "ridge", "flat"]),
         ("Anchor", ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "CENTER"]),
-        ("Fill", ["x", "y", "both"])
+        ("Fill", ["x", "y", "both"]),
+        ("Side", ["right","left","top","bottom"])
     ]
     DECLARED_ENUMS = [t for t, k in ENUMS]
     GEOMETRY_MANIPULATOR = """
@@ -48,6 +49,9 @@ def generate():
         xml += '</xs:complexType>'
         return xml
 
+    def xsd_element(elemName, elemType):
+        return f'<xs:element name="{elemName}" type="{elemType}"/>'
+
     def attribute_declarator(attrName, required=False) -> str:
         required, aType = 'use="required"' if required else "", ""
         if attrName.capitalize() in DECLARED_ENUMS:
@@ -58,11 +62,18 @@ def generate():
     Xml = HEAD + '<xs:element name="Tk" type="Tk"/>'
     # VARIABLE
     Xml += xsd_complex_type("Variable", ["name", "value"], ["name"])
+    # CONFIG CLASS
+    AllConfigs = []
+    for w in Widget.__subclasses__():
+        for a in w().configure().keys():
+            if a not in AllConfigs:
+                AllConfigs.append(a)
+    Xml += xsd_complex_type("ConfigClass",["name"]+AllConfigs,["name"])
     # ENUMS
     for name, attrs in ENUMS: Xml += xsd_enumeration(name, attrs)
     # TK
     Xml += xsd_extended_type("Tk", "BaseWidget", TK_ATTRS + list(Tk().configure().keys()),
-                             '<xs:sequence maxOccurs="unbounded" minOccurs="0"><xs:element name="Variable" type="Variable"/></xs:sequence>'
+        f'<xs:sequence maxOccurs="unbounded" minOccurs="0">{xsd_element("Variable","Variable")}{xsd_element("ConfigClass","ConfigClass")}</xs:sequence>'
                              )
     # ROW / COLUMN CONFIG
     Xml += xsd_complex_type("RowColumnConfig", ["index"] + list(Button().grid_rowconfigure(index="0").keys()))
@@ -81,7 +92,7 @@ def generate():
     Xml += f'</xs:choice></xs:complexType>'
 
     # PACKABLE ()
-    Xml += f'<xs:complexType name="Packable">${GEOMETRY_MANIPULATOR}</xs:complexType>'
+    Xml += f'<xs:complexType name="Packable">{GEOMETRY_MANIPULATOR}</xs:complexType>'
 
     # WIDGET TYPE
     Xml += f'<xs:complexType name="Widget"><xs:complexContent><xs:extension base="BaseWidget">{GEOMETRY_MANIPULATOR}</xs:extension></xs:complexContent></xs:complexType>'
@@ -99,7 +110,7 @@ def generate():
                 Xml += '<xs:choice><xs:element name="Line"/></xs:choice>'
             case _:
                 pass
-        for attr in w().configure().keys(): Xml += attribute_declarator(attr)
+        for attr in list(w().configure().keys())+["id","configclass"]: Xml += attribute_declarator(attr)
         Xml += '</xs:extension></xs:complexContent></xs:complexType>'
 
     return etree.tostring(etree.fromstring(Xml + FOOT), pretty_print=True).decode().replace("  ", "    ")
