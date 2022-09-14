@@ -4,6 +4,49 @@
         <xs:attribute name="name" use="required"/>
         <xs:attribute name="value"/>
     </xs:complexType>
+    <xs:simpleType name="State" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="normal"/>
+            <xs:enumeration value="active"/>
+            <xs:enumeration value="disabled"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Justify" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="left"/>
+            <xs:enumeration value="right"/>
+            <xs:enumeration value="center"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Relief" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="raised"/>
+            <xs:enumeration value="sunken"/>
+            <xs:enumeration value="groove"/>
+            <xs:enumeration value="ridge"/>
+            <xs:enumeration value="flat"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Anchor" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="N"/>
+            <xs:enumeration value="NE"/>
+            <xs:enumeration value="E"/>
+            <xs:enumeration value="SE"/>
+            <xs:enumeration value="S"/>
+            <xs:enumeration value="SW"/>
+            <xs:enumeration value="W"/>
+            <xs:enumeration value="NW"/>
+            <xs:enumeration value="CENTER"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Fill" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="x"/>
+            <xs:enumeration value="y"/>
+            <xs:enumeration value="both"/>
+        </xs:restriction>
+    </xs:simpleType>
     <xs:complexType name="Tk">
         <xs:complexContent>
             <xs:extension base="BaseWidget">
@@ -18,7 +61,7 @@
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="class"/>
                 <xs:attribute name="menu"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="screen"/>
                 <xs:attribute name="use"/>
                 <xs:attribute name="background"/>
@@ -57,9 +100,9 @@
         <xs:attribute name="sticky"/>
     </xs:complexType>
     <xs:complexType name="Pack">
-        <xs:attribute name="anchor"/>
+        <xs:attribute name="anchor" type="Anchor"/>
         <xs:attribute name="expand"/>
-        <xs:attribute name="fill"/>
+        <xs:attribute name="fill" type="Fill"/>
         <xs:attribute name="ipadx"/>
         <xs:attribute name="ipady"/>
         <xs:attribute name="padx"/>
@@ -75,7 +118,7 @@
         <xs:attribute name="relwidth"/>
         <xs:attribute name="height"/>
         <xs:attribute name="relheight"/>
-        <xs:attribute name="anchor"/>
+        <xs:attribute name="anchor" type="Anchor"/>
         <xs:attribute name="bordermode"/>
     </xs:complexType>
     <xs:complexType name="BaseWidget">
@@ -99,19 +142,7 @@
             <xs:element name="PanedWindow" type="PanedWindow"/>
         </xs:choice>
     </xs:complexType>
-    <xs:complexType name="Packable">
-        <xs:sequence>
-            <xs:choice minOccurs="0">
-                <xs:element name="pack" type="Pack"/>
-                <xs:element name="grid" type="Grid"/>
-                <xs:element name="place" type="Place"/>
-            </xs:choice>
-            <xs:choice minOccurs="0">
-                <xs:element name="columnconfig" type="RowColumnConfig"/>
-                <xs:element name="rowconfig" type="RowColumnConfig"/>
-            </xs:choice>
-        </xs:sequence>
-    </xs:complexType>
+    <xs:complexType name="Packable">$<xs:sequence><xs:choice minOccurs="0"><xs:element name="pack" type="Pack"/><xs:element name="grid" type="Grid"/><xs:element name="place" type="Place"/></xs:choice><xs:choice minOccurs="0"><xs:element name="columnconfig" type="RowColumnConfig"/><xs:element name="rowconfig" type="RowColumnConfig"/></xs:choice></xs:sequence></xs:complexType>
     <xs:complexType name="Widget">
         <xs:complexContent>
             <xs:extension base="BaseWidget">
@@ -134,7 +165,7 @@
             <xs:extension base="Widget">
                 <xs:attribute name="activebackground"/>
                 <xs:attribute name="activeforeground"/>
-                <xs:attribute name="anchor"/>
+                <xs:attribute name="anchor" type="Anchor"/>
                 <xs:attribute name="background"/>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="bg"/>
@@ -153,14 +184,14 @@
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="image"/>
-                <xs:attribute name="justify"/>
+                <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="overrelief"/>
                 <xs:attribute name="padx"/>
                 <xs:attribute name="pady"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="repeatdelay"/>
                 <xs:attribute name="repeatinterval"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="text"/>
                 <xs:attribute name="textvariable"/>
@@ -190,12 +221,12 @@
                 <xs:attribute name="insertontime"/>
                 <xs:attribute name="insertwidth"/>
                 <xs:attribute name="offset"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="scrollregion"/>
                 <xs:attribute name="selectbackground"/>
                 <xs:attribute name="selectborderwidth"/>
                 <xs:attribute name="selectforeground"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="xscrollcommand"/>
@@ -210,7 +241,7 @@
             <xs:extension base="Widget">
                 <xs:attribute name="activebackground"/>
                 <xs:attribute name="activeforeground"/>
-                <xs:attribute name="anchor"/>
+                <xs:attribute name="anchor" type="Anchor"/>
                 <xs:attribute name="background"/>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="bg"/>
@@ -229,17 +260,17 @@
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="image"/>
                 <xs:attribute name="indicatoron"/>
-                <xs:attribute name="justify"/>
+                <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="offrelief"/>
                 <xs:attribute name="offvalue"/>
                 <xs:attribute name="onvalue"/>
                 <xs:attribute name="overrelief"/>
                 <xs:attribute name="padx"/>
                 <xs:attribute name="pady"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="selectcolor"/>
                 <xs:attribute name="selectimage"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="text"/>
                 <xs:attribute name="textvariable"/>
@@ -276,14 +307,14 @@
                 <xs:attribute name="insertwidth"/>
                 <xs:attribute name="invalidcommand"/>
                 <xs:attribute name="invcmd"/>
-                <xs:attribute name="justify"/>
+                <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="readonlybackground"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="selectbackground"/>
                 <xs:attribute name="selectborderwidth"/>
                 <xs:attribute name="selectforeground"/>
                 <xs:attribute name="show"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="textvariable"/>
                 <xs:attribute name="validate"/>
@@ -300,7 +331,7 @@
                 <xs:attribute name="bd"/>
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="class"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="background"/>
                 <xs:attribute name="bg"/>
                 <xs:attribute name="colormap"/>
@@ -323,7 +354,7 @@
             <xs:extension base="Widget">
                 <xs:attribute name="activebackground"/>
                 <xs:attribute name="activeforeground"/>
-                <xs:attribute name="anchor"/>
+                <xs:attribute name="anchor" type="Anchor"/>
                 <xs:attribute name="background"/>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="bg"/>
@@ -340,11 +371,11 @@
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="image"/>
-                <xs:attribute name="justify"/>
+                <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="padx"/>
                 <xs:attribute name="pady"/>
-                <xs:attribute name="relief"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="relief" type="Relief"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="text"/>
                 <xs:attribute name="textvariable"/>
@@ -375,14 +406,14 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="justify"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="justify" type="Justify"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="selectbackground"/>
                 <xs:attribute name="selectborderwidth"/>
                 <xs:attribute name="selectforeground"/>
                 <xs:attribute name="selectmode"/>
                 <xs:attribute name="setgrid"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="xscrollcommand"/>
@@ -407,7 +438,7 @@
                 <xs:attribute name="font"/>
                 <xs:attribute name="foreground"/>
                 <xs:attribute name="postcommand"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="selectcolor"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="tearoff"/>
@@ -422,7 +453,7 @@
             <xs:extension base="Widget">
                 <xs:attribute name="activebackground"/>
                 <xs:attribute name="activeforeground"/>
-                <xs:attribute name="anchor"/>
+                <xs:attribute name="anchor" type="Anchor"/>
                 <xs:attribute name="background"/>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="bg"/>
@@ -440,13 +471,13 @@
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="image"/>
                 <xs:attribute name="indicatoron"/>
-                <xs:attribute name="justify"/>
+                <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="menu"/>
                 <xs:attribute name="padx"/>
                 <xs:attribute name="pady"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="compound"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="text"/>
                 <xs:attribute name="textvariable"/>
@@ -459,7 +490,7 @@
     <xs:complexType name="Message">
         <xs:complexContent>
             <xs:extension base="Widget">
-                <xs:attribute name="anchor"/>
+                <xs:attribute name="anchor" type="Anchor"/>
                 <xs:attribute name="aspect"/>
                 <xs:attribute name="background"/>
                 <xs:attribute name="bd"/>
@@ -472,10 +503,10 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="justify"/>
+                <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="padx"/>
                 <xs:attribute name="pady"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="text"/>
                 <xs:attribute name="textvariable"/>
@@ -488,7 +519,7 @@
             <xs:extension base="Widget">
                 <xs:attribute name="activebackground"/>
                 <xs:attribute name="activeforeground"/>
-                <xs:attribute name="anchor"/>
+                <xs:attribute name="anchor" type="Anchor"/>
                 <xs:attribute name="background"/>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="bg"/>
@@ -507,15 +538,15 @@
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="image"/>
                 <xs:attribute name="indicatoron"/>
-                <xs:attribute name="justify"/>
+                <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="offrelief"/>
                 <xs:attribute name="overrelief"/>
                 <xs:attribute name="padx"/>
                 <xs:attribute name="pady"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="selectcolor"/>
                 <xs:attribute name="selectimage"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="text"/>
                 <xs:attribute name="textvariable"/>
@@ -551,14 +582,14 @@
                 <xs:attribute name="label"/>
                 <xs:attribute name="length"/>
                 <xs:attribute name="orient"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="repeatdelay"/>
                 <xs:attribute name="repeatinterval"/>
                 <xs:attribute name="resolution"/>
                 <xs:attribute name="showvalue"/>
                 <xs:attribute name="sliderlength"/>
                 <xs:attribute name="sliderrelief"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="tickinterval"/>
                 <xs:attribute name="to"/>
@@ -585,7 +616,7 @@
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="jump"/>
                 <xs:attribute name="orient"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="repeatdelay"/>
                 <xs:attribute name="repeatinterval"/>
                 <xs:attribute name="takefocus"/>
@@ -623,7 +654,7 @@
                 <xs:attribute name="maxundo"/>
                 <xs:attribute name="padx"/>
                 <xs:attribute name="pady"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="selectbackground"/>
                 <xs:attribute name="selectborderwidth"/>
                 <xs:attribute name="selectforeground"/>
@@ -632,7 +663,7 @@
                 <xs:attribute name="spacing2"/>
                 <xs:attribute name="spacing3"/>
                 <xs:attribute name="startline"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="tabs"/>
                 <xs:attribute name="tabstyle"/>
                 <xs:attribute name="takefocus"/>
@@ -677,15 +708,15 @@
                 <xs:attribute name="insertwidth"/>
                 <xs:attribute name="invalidcommand"/>
                 <xs:attribute name="invcmd"/>
-                <xs:attribute name="justify"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="justify" type="Justify"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="readonlybackground"/>
                 <xs:attribute name="repeatdelay"/>
                 <xs:attribute name="repeatinterval"/>
                 <xs:attribute name="selectbackground"/>
                 <xs:attribute name="selectborderwidth"/>
                 <xs:attribute name="selectforeground"/>
-                <xs:attribute name="state"/>
+                <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="textvariable"/>
                 <xs:attribute name="to"/>
@@ -710,7 +741,7 @@
                 <xs:attribute name="foreground"/>
                 <xs:attribute name="labelanchor"/>
                 <xs:attribute name="labelwidget"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="text"/>
                 <xs:attribute name="background"/>
                 <xs:attribute name="bg"/>
@@ -745,7 +776,7 @@
                 <xs:attribute name="proxybackground"/>
                 <xs:attribute name="proxyborderwidth"/>
                 <xs:attribute name="proxyrelief"/>
-                <xs:attribute name="relief"/>
+                <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="sashcursor"/>
                 <xs:attribute name="sashpad"/>
                 <xs:attribute name="sashrelief"/>

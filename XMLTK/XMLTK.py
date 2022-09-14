@@ -65,7 +65,6 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
             if configureWidget(elem, ch):
                 match parseNamespace(ch.tag):
                     case "Listbox":
-                        print("Listbox")
                         for line in [l for l in ch if parseNamespace(l.tag) == "Line"]:
                             elem.insert("end", line.text if line.text is not None else "")
                     case _:

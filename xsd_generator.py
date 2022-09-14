@@ -1,31 +1,71 @@
 from tkinter import *
 from lxml import etree
 
-HEAD = '<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="Tkinter">'
-FOOT = '</xs:schema>'
-TK_ATTRS = ["title","geometry","resizable","icon"]
 
 def generate():
+    HEAD = '<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="Tkinter">'
+    FOOT = '</xs:schema>'
+    TK_ATTRS = ["title", "geometry", "resizable", "icon"]
+    ENUMS = [
+        ("State", ["normal", "active", "disabled"]),
+        ("Justify", ["left", "right", "center"]),
+        ("Relief", ["raised", "sunken", "groove", "ridge", "flat"]),
+        ("Anchor", ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "CENTER"]),
+        ("Fill", ["x", "y", "both"])
+    ]
+    DECLARED_ENUMS = [t for t, k in ENUMS]
+    GEOMETRY_MANIPULATOR = """
+    <xs:sequence>
+        <xs:choice minOccurs="0">
+            <xs:element name="pack" type="Pack"/>
+            <xs:element name="grid" type="Grid"/>
+            <xs:element name="place" type="Place"/>
+        </xs:choice>
+        <xs:choice minOccurs="0">
+            <xs:element name="columnconfig" type="RowColumnConfig"/>
+            <xs:element name="rowconfig" type="RowColumnConfig"/>
+        </xs:choice>
+    </xs:sequence>
+    """.strip().replace("\n", "").replace("    ", "")
+
+    def xsd_enumeration(objName, values) -> str:
+        xml = f'<xs:simpleType name="{objName}" final="restriction"><xs:restriction base="xs:string">'
+        for val in values: xml += f'<xs:enumeration value="{val}"/>'
+        xml += '</xs:restriction></xs:simpleType>'
+        return xml
+
+    def xsd_extended_type(objName, extends, objAttrs, otherBody="") -> str:
+        xml = f'<xs:complexType name="{objName}"><xs:complexContent><xs:extension base="{extends}">' + otherBody
+        for a in objAttrs: xml += attribute_declarator(a)
+        xml += f'</xs:extension></xs:complexContent></xs:complexType>'
+        return xml
+
+    def xsd_complex_type(objName, objAttrs, requiredAttrs=None) -> str:
+        if requiredAttrs is None:
+            requiredAttrs = []
+        xml = f'<xs:complexType name="{objName}">'
+        for a in objAttrs: xml += attribute_declarator(a, a in requiredAttrs)
+        xml += '</xs:complexType>'
+        return xml
+
+    def attribute_declarator(attrName, required=False) -> str:
+        required, aType = 'use="required"' if required else "", ""
+        if attrName.capitalize() in DECLARED_ENUMS:
+            aType = f'type="{attrName.capitalize()}"'
+        return f'<xs:attribute name="{attrName}" {aType} {required}/>'
+
     # START
     Xml = HEAD + '<xs:element name="Tk" type="Tk"/>'
-
     # VARIABLE
-    Xml += '<xs:complexType name="Variable">' \
-           '<xs:attribute name="name" use="required"/>' \
-           '<xs:attribute name="value"/>' \
-           '</xs:complexType>'
-
+    Xml += xsd_complex_type("Variable", ["name", "value"], ["name"])
+    # ENUMS
+    for name, attrs in ENUMS: Xml += xsd_enumeration(name, attrs)
     # TK
-    Xml += f'<xs:complexType name="Tk"><xs:complexContent><xs:extension base="BaseWidget">'
-    Xml += '<xs:sequence maxOccurs="unbounded" minOccurs="0"><xs:element name="Variable" type="Variable"/></xs:sequence>'
-    for attr in TK_ATTRS+list(Tk().configure().keys()): Xml+= f'<xs:attribute name="{attr}"/>'
-    Xml += f'</xs:extension></xs:complexContent></xs:complexType>'
-
+    Xml += xsd_extended_type("Tk", "BaseWidget", TK_ATTRS + list(Tk().configure().keys()),
+                             '<xs:sequence maxOccurs="unbounded" minOccurs="0"><xs:element name="Variable" type="Variable"/></xs:sequence>'
+                             )
     # ROW / COLUMN CONFIG
-    Xml += '<xs:complexType name="RowColumnConfig">'
-    for key in ["index"]+list(Button().grid_rowconfigure(index="0").keys()):
-        Xml += f'<xs:attribute name="{key}"/>'
-    Xml += '</xs:complexType>'
+    Xml += xsd_complex_type("RowColumnConfig", ["index"] + list(Button().grid_rowconfigure(index="0").keys()))
 
     # GRID / PACK / PLACE
     b = Button()
@@ -33,54 +73,18 @@ def generate():
     for geo, geo_info, geo_args in geo_dec:
         b = Button()
         geo(geo_args)
-        name: str = geo.__name__
-        Xml += f'<xs:complexType name="{name.partition("_")[0].capitalize()}">'
-        for attr in [a for a in geo_info() if a not in ["in"]]:
-            Xml += f'<xs:attribute name="{attr}"/>'
-        Xml += f'</xs:complexType>'
+        Xml += xsd_complex_type(geo.__name__.partition("_")[0].capitalize(), [a for a in geo_info() if a not in ["in"]])
 
     # BASE WIDGET TYPE
     Xml += f'<xs:complexType name="BaseWidget"><xs:choice maxOccurs="unbounded" minOccurs="0">'
-    for w in Widget.__subclasses__(): Xml+=f'<xs:element name="{w.__name__}" type="{w.__name__}"/>'
+    for w in Widget.__subclasses__(): Xml += f'<xs:element name="{w.__name__}" type="{w.__name__}"/>'
     Xml += f'</xs:choice></xs:complexType>'
 
     # PACKABLE ()
-    Xml += """
-    <xs:complexType name="Packable">
-        <xs:sequence>
-            <xs:choice minOccurs="0">
-                <xs:element name="pack" type="Pack"/>
-                <xs:element name="grid" type="Grid"/>
-                <xs:element name="place" type="Place"/>
-            </xs:choice>
-            <xs:choice minOccurs="0">
-                <xs:element name="columnconfig" type="RowColumnConfig"/>
-                <xs:element name="rowconfig" type="RowColumnConfig"/>
-            </xs:choice>
-        </xs:sequence>
-    </xs:complexType>
-    """.strip().replace("\n","").replace("    ","")
+    Xml += f'<xs:complexType name="Packable">${GEOMETRY_MANIPULATOR}</xs:complexType>'
 
     # WIDGET TYPE
-    Xml += """
-    <xs:complexType name="Widget">
-        <xs:complexContent>
-            <xs:extension base="BaseWidget">
-                <xs:sequence>
-                    <xs:choice minOccurs="0">
-                        <xs:element name="pack" type="Pack"/>
-                        <xs:element name="grid" type="Grid"/>
-                        <xs:element name="place" type="Place"/>
-                    </xs:choice>
-                    <xs:choice minOccurs="0">
-                        <xs:element name="columnconfig" type="RowColumnConfig"/>
-                        <xs:element name="rowconfig" type="RowColumnConfig"/>
-                    </xs:choice>
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-    """.strip().replace("\n","").replace("    ","")
+    Xml += f'<xs:complexType name="Widget"><xs:complexContent><xs:extension base="BaseWidget">{GEOMETRY_MANIPULATOR}</xs:extension></xs:complexContent></xs:complexType>'
 
     # WIDGET WITH PARAMS
     for w in Widget.__subclasses__():
@@ -93,12 +97,12 @@ def generate():
         match w.__name__:
             case "Listbox":
                 Xml += '<xs:choice><xs:element name="Line"/></xs:choice>'
-            case _: pass
-        for attr in w().configure().keys(): Xml += f'<xs:attribute name="{attr}"/>'
+            case _:
+                pass
+        for attr in w().configure().keys(): Xml += attribute_declarator(attr)
         Xml += '</xs:extension></xs:complexContent></xs:complexType>'
 
-    # END + RETURN
-    Xml += FOOT
-    return etree.tostring(etree.fromstring(Xml),pretty_print=True).decode()
+    return etree.tostring(etree.fromstring(Xml + FOOT), pretty_print=True).decode().replace("  ", "    ")
 
-open("Tkinter.xsd","w").write(generate())
+
+open("Tkinter.xsd", "w").write(generate())
