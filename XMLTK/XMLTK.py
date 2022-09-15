@@ -1,3 +1,4 @@
+import xml.etree.ElementTree
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 import tkinter
@@ -20,10 +21,14 @@ class XmlTk:
     def getWidgetById(self, id: str) -> Widget | None:
         return self.__IDWidgets.get(id,None)
 
+class XMLTKParseException(Exception):
+    __module__ = Exception.__module__
 
 def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | None = None):
+
     if functions is None:
         functions = {}
+
     def parseNamespace(tag: str):
         return tag.split("}")[1] if tag.__contains__("}") else tag
 
@@ -74,8 +79,10 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
 
         data: dict[str, any] = xmlelem.attrib
 
-        if "configclass" in data and data["configclass"] in ConfigClasses:
-            data.update(ConfigClasses[data["configclass"]])
+        if "configclass" in data:
+            for cls in data["configclass"].split(" "):
+                if cls in ConfigClasses:
+                    data.update(ConfigClasses[cls])
             del data["configclass"]
 
         if "font" in data: data["font"] = tuple(data["font"].split(";", 3))
@@ -120,7 +127,11 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
     Variables: dict[str, Variable] = {}
     IDWidgets: dict[str, Widget] = {}
     ConfigClasses: dict[str,dict[str,any]] = {}
-    root = ET.parse(filepath).getroot()
+    try:
+        root = ET.parse(filepath).getroot()
+    except Exception as exce:
+        raise XMLTKParseException(exce.args[0]) from None
+
 
     for key in ROOT_ATTRIBS.keys():
         if key in root.attrib: ROOT_ATTRIBS[key](root.attrib[key])
@@ -134,7 +145,10 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
         Variables[child.attrib.get("name")] = Variable(master=Win, name=child.attrib.get("name"),
                                                        value=child.attrib.get("value"))
     for child in [child for child in root if parseNamespace(child.tag) == "ConfigClass"]:
-        ConfigClasses[child.attrib.get("name")] = {k: v for k, v in child.attrib.items() if k not in ["name"]}
+        if child.attrib.get("name").__contains__(" "):
+            raise Exception("ConfigClass name attribute cannot contain spaces!")
+        else:
+            ConfigClasses[child.attrib.get("name")] = {k: v for k, v in child.attrib.items() if k not in ["name"]}
 
     applyChild(Win, root)
     return XmlTk(Win, Variables, IDWidgets)

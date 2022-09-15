@@ -15,9 +15,9 @@
         <xs:attribute name="bitmap"/>
         <xs:attribute name="borderwidth"/>
         <xs:attribute name="command"/>
-        <xs:attribute name="compound"/>
+        <xs:attribute name="compound" type="Compound"/>
         <xs:attribute name="cursor"/>
-        <xs:attribute name="default"/>
+        <xs:attribute name="default" type="Default"/>
         <xs:attribute name="disabledforeground"/>
         <xs:attribute name="fg"/>
         <xs:attribute name="font"/>
@@ -151,6 +151,13 @@
             <xs:enumeration value="disabled"/>
         </xs:restriction>
     </xs:simpleType>
+    <xs:simpleType name="Default" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="normal"/>
+            <xs:enumeration value="active"/>
+            <xs:enumeration value="disabled"/>
+        </xs:restriction>
+    </xs:simpleType>
     <xs:simpleType name="Justify" final="restriction">
         <xs:restriction base="xs:string">
             <xs:enumeration value="left"/>
@@ -193,6 +200,25 @@
             <xs:enumeration value="left"/>
             <xs:enumeration value="top"/>
             <xs:enumeration value="bottom"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Compound" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="top"/>
+            <xs:enumeration value="left"/>
+            <xs:enumeration value="center"/>
+            <xs:enumeration value="right"/>
+            <xs:enumeration value="bottom"/>
+            <xs:enumeration value="none"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="OverRelief" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="raised"/>
+            <xs:enumeration value="sunken"/>
+            <xs:enumeration value="groove"/>
+            <xs:enumeration value="ridge"/>
+            <xs:enumeration value="flat"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="Tk">
@@ -333,9 +359,9 @@
                 <xs:attribute name="bitmap"/>
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="command"/>
-                <xs:attribute name="compound"/>
+                <xs:attribute name="compound" type="Compound"/>
                 <xs:attribute name="cursor"/>
-                <xs:attribute name="default"/>
+                <xs:attribute name="default" type="Default"/>
                 <xs:attribute name="disabledforeground"/>
                 <xs:attribute name="fg"/>
                 <xs:attribute name="font"/>
@@ -413,7 +439,7 @@
                 <xs:attribute name="bitmap"/>
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="command"/>
-                <xs:attribute name="compound"/>
+                <xs:attribute name="compound" type="Compound"/>
                 <xs:attribute name="cursor"/>
                 <xs:attribute name="disabledforeground"/>
                 <xs:attribute name="fg"/>
@@ -531,7 +557,7 @@
                 <xs:attribute name="bg"/>
                 <xs:attribute name="bitmap"/>
                 <xs:attribute name="borderwidth"/>
-                <xs:attribute name="compound"/>
+                <xs:attribute name="compound" type="Compound"/>
                 <xs:attribute name="cursor"/>
                 <xs:attribute name="disabledforeground"/>
                 <xs:attribute name="fg"/>
@@ -653,7 +679,7 @@
                 <xs:attribute name="padx"/>
                 <xs:attribute name="pady"/>
                 <xs:attribute name="relief" type="Relief"/>
-                <xs:attribute name="compound"/>
+                <xs:attribute name="compound" type="Compound"/>
                 <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="text"/>
@@ -707,7 +733,7 @@
                 <xs:attribute name="bitmap"/>
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="command"/>
-                <xs:attribute name="compound"/>
+                <xs:attribute name="compound" type="Compound"/>
                 <xs:attribute name="cursor"/>
                 <xs:attribute name="disabledforeground"/>
                 <xs:attribute name="fg"/>

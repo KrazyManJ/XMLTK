@@ -8,11 +8,14 @@ def generate():
     TK_ATTRS = ["title", "geometry", "resizable", "icon"]
     ENUMS = [
         ("State", ["normal", "active", "disabled"]),
+        ("Default", ["normal", "active", "disabled"]),
         ("Justify", ["left", "right", "center"]),
         ("Relief", ["raised", "sunken", "groove", "ridge", "flat"]),
         ("Anchor", ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "CENTER"]),
         ("Fill", ["x", "y", "both"]),
-        ("Side", ["right","left","top","bottom"])
+        ("Side", ["right","left","top","bottom"]),
+        ("Compound", ["top", "left", "center", "right", "bottom", "none"]),
+        ("OverRelief", ["raised", "sunken", "groove", "ridge", "flat"])
     ]
     DECLARED_ENUMS = [t for t, k in ENUMS]
     GEOMETRY_MANIPULATOR = """
