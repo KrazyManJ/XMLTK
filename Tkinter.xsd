@@ -26,7 +26,7 @@
         <xs:attribute name="highlightbackground"/>
         <xs:attribute name="highlightcolor"/>
         <xs:attribute name="highlightthickness"/>
-        <xs:attribute name="image"/>
+        <xs:attribute name="image" type="xs:anyURI"/>
         <xs:attribute name="justify" type="Justify"/>
         <xs:attribute name="overrelief"/>
         <xs:attribute name="padx"/>
@@ -221,6 +221,14 @@
             <xs:enumeration value="flat"/>
         </xs:restriction>
     </xs:simpleType>
+    <xs:simpleType name="Resizable" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="true true"/>
+            <xs:enumeration value="true false"/>
+            <xs:enumeration value="false true"/>
+            <xs:enumeration value="false false"/>
+        </xs:restriction>
+    </xs:simpleType>
     <xs:complexType name="Tk">
         <xs:complexContent>
             <xs:extension base="BaseWidget">
@@ -230,8 +238,8 @@
                 </xs:sequence>
                 <xs:attribute name="title"/>
                 <xs:attribute name="geometry"/>
-                <xs:attribute name="resizable"/>
-                <xs:attribute name="icon"/>
+                <xs:attribute name="resizable" type="Resizable"/>
+                <xs:attribute name="icon" type="xs:anyURI"/>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="class"/>
@@ -370,7 +378,7 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="image"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
                 <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="overrelief"/>
                 <xs:attribute name="padx"/>
@@ -449,7 +457,7 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="image"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
                 <xs:attribute name="indicatoron"/>
                 <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="offrelief"/>
@@ -567,7 +575,7 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="image"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
                 <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="padx"/>
                 <xs:attribute name="pady"/>
@@ -672,7 +680,7 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="image"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
                 <xs:attribute name="indicatoron"/>
                 <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="menu"/>
@@ -743,7 +751,7 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="image"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
                 <xs:attribute name="indicatoron"/>
                 <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="offrelief"/>

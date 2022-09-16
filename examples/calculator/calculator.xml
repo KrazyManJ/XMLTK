@@ -2,7 +2,7 @@
 
     <Variable name="display"/>
 
-    <ConfigClass name="button" cursor="xterm" borderwidth="0" width="3" command="insert" bg="#dbdbdb" fg="black" activebackground="white" activeforeground="black" font="Arial; 20"/>
+    <ConfigClass name="button" borderwidth="0" width="3" command="insert" bg="#dbdbdb" fg="black" activebackground="white" activeforeground="black" font="Arial; 20"/>
     <ConfigClass name="clear" command="clear" bg="#428df5" activebackground="#a7cbfc" activeforeground="white" fg="white"/>
     <ConfigClass name="equals" command="equals" bg="#f59842" activeforeground="white" activebackground="#ffbe82" fg="white"/>
 
@@ -10,7 +10,7 @@
         <pack fill="x" padx="5" pady="10 10"/>
     </Label>
     <Frame bg="#2c2f38">
-        <Button configclass="button clear">C<grid row="0" column="0" sticky="NESW" padx="5" pady="5"/></Button>
+        <Button  configclass="button clear">C<grid row="0" column="0" sticky="NESW" padx="5" pady="5"/></Button>
         <Button configclass="button">/<grid row="0" column="1" sticky="NESW" padx="5" pady="5"/></Button>
         <Button configclass="button">%<grid row="0" column="2" sticky="NESW" padx="5" pady="5"/></Button>
         <Button configclass="button">*<grid row="0" column="3" sticky="NESW" padx="5" pady="5"/></Button>
@@ -24,7 +24,7 @@
         <Button configclass="button">5<grid row="2" column="1" sticky="NESW" padx="5" pady="5"/></Button>
         <Button configclass="button">6<grid row="2" column="2" sticky="NESW" padx="5" pady="5"/></Button>
         <Button configclass="button">+<grid row="2" column="3" sticky="NESW" padx="5" pady="5"/></Button>
-
+        <
         <Button configclass="button">1<grid row="3" column="0" sticky="NESW" padx="5" pady="5"/></Button>
         <Button configclass="button">2<grid row="3" column="1" sticky="NESW" padx="5" pady="5"/></Button>
         <Button configclass="button">3<grid row="3" column="2" sticky="NESW" padx="5" pady="5"/></Button>

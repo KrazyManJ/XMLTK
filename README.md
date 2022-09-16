@@ -12,6 +12,8 @@ package you are able to write it just like web page with html.
 
 - <kbd>Easy HTML-like Syntax</kbd> - Creating of app has never been easier without
 any kind of graphical designer
+- <kbd>Tkinter XML Schema</kbd> - XMLTK Includes schema to add ability to your IDE to give
+you hints when writing XML Code like list of available Widgets or Attributes
 - <kbd>Functions parsing</kbd> - To apply functionality to the app, you need to use functions also.
 For that XMLTK can get functions via getting them in parse section and apply them to the actual
 targeted element
@@ -19,7 +21,7 @@ targeted element
 attribute to get it via function in parsed application to do anything you want
 - <kbd>Variables</kbd> - To get user's input data, you can use variables how you can in normal Tkinter app,
 just declare it in XML file and then use its name to retrieve it, and also use it in design
-- <kbd>Configuration Classes</kbd> *NEW* - Just like in HTML, you can create class with attributes and then
+- <kbd>Configuration Classes</kbd> - Just like in HTML, you can create class with attributes and then
 just link Widgets to apply one configuration to multiple elements
 
 ## Example

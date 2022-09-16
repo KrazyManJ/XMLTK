@@ -15,9 +15,13 @@ def generate():
         ("Fill", ["x", "y", "both"]),
         ("Side", ["right","left","top","bottom"]),
         ("Compound", ["top", "left", "center", "right", "bottom", "none"]),
-        ("OverRelief", ["raised", "sunken", "groove", "ridge", "flat"])
+        ("OverRelief", ["raised", "sunken", "groove", "ridge", "flat"]),
+        ("Resizable", ["true true", "true false", "false true", "false false"])
     ]
-    DECLARED_ENUMS = [t for t, k in ENUMS]
+    TYPES = {
+        "image": "xs:anyURI",
+        "icon": "xs:anyURI"
+    }
     GEOMETRY_MANIPULATOR = """
     <xs:sequence>
         <xs:choice minOccurs="0">
@@ -57,8 +61,10 @@ def generate():
 
     def attribute_declarator(attrName, required=False) -> str:
         required, aType = 'use="required"' if required else "", ""
-        if attrName.capitalize() in DECLARED_ENUMS:
+        if attrName.capitalize() in [t for t, k in ENUMS]:
             aType = f'type="{attrName.capitalize()}"'
+        elif attrName in TYPES.keys():
+            aType = f'type="{TYPES[attrName]}"'
         return f'<xs:attribute name="{attrName}" {aType} {required}/>'
 
     # START
