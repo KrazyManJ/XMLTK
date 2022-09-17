@@ -4,8 +4,9 @@
         <xs:attribute name="name" use="required"/>
         <xs:attribute name="value"/>
     </xs:complexType>
-    <xs:complexType name="ConfigClass">
+    <xs:complexType name="Style">
         <xs:attribute name="name" use="required"/>
+        <xs:attribute name="padding"/>
         <xs:attribute name="activebackground"/>
         <xs:attribute name="activeforeground"/>
         <xs:attribute name="anchor" type="Anchor"/>
@@ -149,6 +150,7 @@
             <xs:enumeration value="normal"/>
             <xs:enumeration value="active"/>
             <xs:enumeration value="disabled"/>
+            <xs:enumeration value="readonly"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="Default" final="restriction">
@@ -176,15 +178,15 @@
     </xs:simpleType>
     <xs:simpleType name="Anchor" final="restriction">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="N"/>
-            <xs:enumeration value="NE"/>
-            <xs:enumeration value="E"/>
-            <xs:enumeration value="SE"/>
-            <xs:enumeration value="S"/>
-            <xs:enumeration value="SW"/>
-            <xs:enumeration value="W"/>
-            <xs:enumeration value="NW"/>
-            <xs:enumeration value="CENTER"/>
+            <xs:enumeration value="n"/>
+            <xs:enumeration value="ne"/>
+            <xs:enumeration value="e"/>
+            <xs:enumeration value="se"/>
+            <xs:enumeration value="s"/>
+            <xs:enumeration value="sw"/>
+            <xs:enumeration value="w"/>
+            <xs:enumeration value="nw"/>
+            <xs:enumeration value="center"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="Fill" final="restriction">
@@ -234,7 +236,7 @@
             <xs:extension base="BaseWidget">
                 <xs:sequence maxOccurs="unbounded" minOccurs="0">
                     <xs:element name="Variable" type="Variable"/>
-                    <xs:element name="ConfigClass" type="ConfigClass"/>
+                    <xs:element name="Style" type="Style"/>
                 </xs:sequence>
                 <xs:attribute name="title"/>
                 <xs:attribute name="geometry"/>
@@ -323,6 +325,22 @@
             <xs:element name="Spinbox" type="Spinbox"/>
             <xs:element name="LabelFrame" type="LabelFrame"/>
             <xs:element name="PanedWindow" type="PanedWindow"/>
+            <xs:element name="T-Button" type="T-Button"/>
+            <xs:element name="T-Checkbutton" type="T-Checkbutton"/>
+            <xs:element name="T-Entry" type="T-Entry"/>
+            <xs:element name="T-Frame" type="T-Frame"/>
+            <xs:element name="T-Label" type="T-Label"/>
+            <xs:element name="T-Labelframe" type="T-Labelframe"/>
+            <xs:element name="T-Menubutton" type="T-Menubutton"/>
+            <xs:element name="T-Notebook" type="T-Notebook"/>
+            <xs:element name="T-Panedwindow" type="T-Panedwindow"/>
+            <xs:element name="T-Progressbar" type="T-Progressbar"/>
+            <xs:element name="T-Radiobutton" type="T-Radiobutton"/>
+            <xs:element name="T-Scale" type="T-Scale"/>
+            <xs:element name="T-Scrollbar" type="T-Scrollbar"/>
+            <xs:element name="T-Separator" type="T-Separator"/>
+            <xs:element name="T-Sizegrip" type="T-Sizegrip"/>
+            <xs:element name="T-Treeview" type="T-Treeview"/>
         </xs:choice>
     </xs:complexType>
     <xs:complexType name="Packable">
@@ -394,7 +412,7 @@
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -431,7 +449,7 @@
                 <xs:attribute name="yscrollcommand"/>
                 <xs:attribute name="yscrollincrement"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -480,7 +498,7 @@
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -524,7 +542,7 @@
                 <xs:attribute name="width"/>
                 <xs:attribute name="xscrollcommand"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -550,7 +568,7 @@
                 <xs:attribute name="visual"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -588,7 +606,7 @@
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -627,7 +645,7 @@
                 <xs:attribute name="yscrollcommand"/>
                 <xs:attribute name="listvariable"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -655,7 +673,7 @@
                 <xs:attribute name="title"/>
                 <xs:attribute name="type"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -696,7 +714,7 @@
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -725,7 +743,7 @@
                 <xs:attribute name="textvariable"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -773,7 +791,7 @@
                 <xs:attribute name="width"/>
                 <xs:attribute name="wraplength"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -814,7 +832,7 @@
                 <xs:attribute name="variable"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -842,7 +860,7 @@
                 <xs:attribute name="troughcolor"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -894,7 +912,7 @@
                 <xs:attribute name="xscrollcommand"/>
                 <xs:attribute name="yscrollcommand"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -951,7 +969,7 @@
                 <xs:attribute name="wrap"/>
                 <xs:attribute name="xscrollcommand"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -983,7 +1001,7 @@
                 <xs:attribute name="visual"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -1011,7 +1029,317 @@
                 <xs:attribute name="showhandle"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="id"/>
-                <xs:attribute name="configclass"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Button">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="command"/>
+                <xs:attribute name="default" type="Default"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="text"/>
+                <xs:attribute name="textvariable"/>
+                <xs:attribute name="underline"/>
+                <xs:attribute name="width"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
+                <xs:attribute name="compound" type="Compound"/>
+                <xs:attribute name="padding"/>
+                <xs:attribute name="state" type="State"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Checkbutton">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="variable"/>
+                <xs:attribute name="onvalue"/>
+                <xs:attribute name="offvalue"/>
+                <xs:attribute name="command"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="text"/>
+                <xs:attribute name="textvariable"/>
+                <xs:attribute name="underline"/>
+                <xs:attribute name="width"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
+                <xs:attribute name="compound" type="Compound"/>
+                <xs:attribute name="padding"/>
+                <xs:attribute name="state" type="State"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Entry">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="exportselection"/>
+                <xs:attribute name="font"/>
+                <xs:attribute name="invalidcommand"/>
+                <xs:attribute name="justify" type="Justify"/>
+                <xs:attribute name="show"/>
+                <xs:attribute name="state" type="State"/>
+                <xs:attribute name="textvariable"/>
+                <xs:attribute name="validate"/>
+                <xs:attribute name="validatecommand"/>
+                <xs:attribute name="width"/>
+                <xs:attribute name="xscrollcommand"/>
+                <xs:attribute name="foreground"/>
+                <xs:attribute name="background"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Frame">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="borderwidth"/>
+                <xs:attribute name="padding"/>
+                <xs:attribute name="relief" type="Relief"/>
+                <xs:attribute name="width"/>
+                <xs:attribute name="height"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Label">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="background"/>
+                <xs:attribute name="foreground"/>
+                <xs:attribute name="font"/>
+                <xs:attribute name="borderwidth"/>
+                <xs:attribute name="relief" type="Relief"/>
+                <xs:attribute name="anchor" type="Anchor"/>
+                <xs:attribute name="justify" type="Justify"/>
+                <xs:attribute name="wraplength"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="text"/>
+                <xs:attribute name="textvariable"/>
+                <xs:attribute name="underline"/>
+                <xs:attribute name="width"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
+                <xs:attribute name="compound" type="Compound"/>
+                <xs:attribute name="padding"/>
+                <xs:attribute name="state" type="State"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Labelframe">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="labelanchor"/>
+                <xs:attribute name="text"/>
+                <xs:attribute name="underline"/>
+                <xs:attribute name="labelwidget"/>
+                <xs:attribute name="borderwidth"/>
+                <xs:attribute name="padding"/>
+                <xs:attribute name="relief" type="Relief"/>
+                <xs:attribute name="width"/>
+                <xs:attribute name="height"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Menubutton">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="menu"/>
+                <xs:attribute name="direction"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="text"/>
+                <xs:attribute name="textvariable"/>
+                <xs:attribute name="underline"/>
+                <xs:attribute name="width"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
+                <xs:attribute name="compound" type="Compound"/>
+                <xs:attribute name="padding"/>
+                <xs:attribute name="state" type="State"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Notebook">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="width"/>
+                <xs:attribute name="height"/>
+                <xs:attribute name="padding"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Panedwindow">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="orient"/>
+                <xs:attribute name="width"/>
+                <xs:attribute name="height"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Progressbar">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="orient"/>
+                <xs:attribute name="length"/>
+                <xs:attribute name="mode"/>
+                <xs:attribute name="maximum"/>
+                <xs:attribute name="variable"/>
+                <xs:attribute name="value"/>
+                <xs:attribute name="phase"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Radiobutton">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="variable"/>
+                <xs:attribute name="value"/>
+                <xs:attribute name="command"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="text"/>
+                <xs:attribute name="textvariable"/>
+                <xs:attribute name="underline"/>
+                <xs:attribute name="width"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
+                <xs:attribute name="compound" type="Compound"/>
+                <xs:attribute name="padding"/>
+                <xs:attribute name="state" type="State"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Scale">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="command"/>
+                <xs:attribute name="variable"/>
+                <xs:attribute name="orient"/>
+                <xs:attribute name="from"/>
+                <xs:attribute name="to"/>
+                <xs:attribute name="value"/>
+                <xs:attribute name="length"/>
+                <xs:attribute name="state" type="State"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Scrollbar">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="command"/>
+                <xs:attribute name="orient"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Separator">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="orient"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Sizegrip">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="T-Treeview">
+        <xs:complexContent>
+            <xs:extension base="Widget">
+                <xs:attribute name="columns"/>
+                <xs:attribute name="displaycolumns"/>
+                <xs:attribute name="show"/>
+                <xs:attribute name="selectmode"/>
+                <xs:attribute name="height"/>
+                <xs:attribute name="padding"/>
+                <xs:attribute name="xscrollcommand"/>
+                <xs:attribute name="yscrollcommand"/>
+                <xs:attribute name="takefocus"/>
+                <xs:attribute name="cursor"/>
+                <xs:attribute name="style"/>
+                <xs:attribute name="class"/>
+                <xs:attribute name="id"/>
+                <xs:attribute name="style"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

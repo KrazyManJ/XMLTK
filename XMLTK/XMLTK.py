@@ -1,9 +1,11 @@
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
-import tkinter
+import tkinter as tk
+import tkinter.ttk as ttk
 from tkinter import Tk, Widget, Variable, PhotoImage
 from dataclasses import dataclass
 from typing import Callable
+import uuid
 
 __all__ = ["parse"]
 
@@ -34,7 +36,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
         "rowconfig": Widget.rowconfigure.__name__,
         "columnconfig": Widget.columnconfigure.__name__
     }
-    BLACKLIST_TAGS = PLACE_TAGS + list(GRID_CONFIGURATORS.keys()) + ["Variable", "ConfigClass"]
+    BLACKLIST_TAGS = PLACE_TAGS + list(GRID_CONFIGURATORS.keys()) + ["Variable", "Style"]
     ROOT_ATTRIBS = {
         "geometry": Win.geometry,
         "title": Win.title,
@@ -43,7 +45,8 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
 
     Variables: dict[str, Variable] = {}
     IDWidgets: dict[str, Widget] = {}
-    ConfigClasses: dict[str, dict[str, any]] = {}
+    Styles: dict[str, dict[str, any]] = {}
+    TStyle = ttk.Style()
 
     if functions is None:
         functions = {}
@@ -67,26 +70,46 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
 
     def applyChild(parentelem: Widget | Tk, xmldata: Element):
         for ch in [ch for ch in xmldata if clearNamespace(ch.tag) not in BLACKLIST_TAGS]:
-            fc = getattr(tkinter, clearNamespace(ch.tag))
+            tag = clearNamespace(ch.tag)
+            if tag.startswith("T-"):
+                fc = getattr(ttk, tag.split("-")[1])
+            else:
+                fc = getattr(tk, tag)
             elem = fc(parentelem)
             if configureWidget(elem, ch):
-                tag = clearNamespace(ch.tag)
+                tag = tag
                 if tag == "Listbox":
                     for line in [l for l in ch if clearNamespace(l.tag) == "Line"]:
                         elem.insert("end", line.text if line.text is not None else "")
                 else:
                     applyChild(elem, ch)
 
+    def attrsConvertor(dataDict) -> dict:
+        if "font" in dataDict and dataDict["font"].__contains__(";"):
+            dataDict["font"] = tuple(dataDict["font"].split(";", 3))
+        return dataDict
+
     def configureWidget(widget: Widget, xmlelem: Element) -> bool:
 
         data: dict[str, any] = xmlelem.attrib
 
-        if "configclass" in data:
-            for cls in [cls for cls in data["configclass"].split(" ") if cls in ConfigClasses]:
-                data.update(ConfigClasses[cls])
-            del data["configclass"]
-        if "font" in data and data["font"].__contains__(";"):
-            data["font"] = tuple(data["font"].split(";", 3))
+        isTtk = widget.__module__ == "tkinter.ttk"
+        if "style" in data:
+            for stl in [cls for cls in data["style"].split(" ") if cls in Styles]:
+                if isTtk:
+                    data["style"] = f"{stl}.T{widget.widgetName.split('::')[1].capitalize()}"
+                    break
+                else:
+                    data.update(Styles[stl])
+            if not isTtk:
+                del data["style"]
+        elif isTtk:
+            styleId = uuid.uuid4()
+            name = widget.widgetName.split("::")[1].capitalize()
+            TStyle.configure(f"{styleId}.T{name}",**{k: v for k, v in data.items() if k not in widget.configure().keys()})
+            data = {k: v for k, v in data.items() if k in widget.configure().keys()}
+            data["style"] = f"{styleId}.T{name}"
+        data = attrsConvertor(data)
         if "id" in data:
             IDWidgets[data["id"]] = widget
             del data["id"]
@@ -105,7 +128,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
 
         count = [ch for ch in xmlelem if clearNamespace(ch.tag) not in PLACE_TAGS].__len__()
         if count == 0 and xmlelem.text is not None and xmlelem.text.strip().__len__() != 0:
-            xmlelem.attrib["text"] = xmlelem.text.strip()
+            data["text"] = xmlelem.text.strip()
         widget.configure(data)
         return count > 0
 
@@ -125,11 +148,14 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
     for child in [child for child in root if clearNamespace(child.tag) == "Variable" and "name" in child.attrib]:
         Variables[child.attrib["name"]] = Variable(**child.attrib)
 
-    for child in [child for child in root if clearNamespace(child.tag) == "ConfigClass"]:
-        if child.attrib.get("name").__contains__(" "):
-            raise Exception("ConfigClass name attribute cannot contain spaces!")
+    for child in [child for child in root if clearNamespace(child.tag) == "Style" and "name" in child.attrib]:
+        if child.attrib["name"].__contains__(" "):
+            raise Exception("Style name attribute cannot contain spaces!")
         else:
-            ConfigClasses[child.attrib.get("name")] = {k: v for k, v in child.attrib.items() if k not in ["name"]}
+            styleName = child.attrib["name"]
+            Styles[styleName] = attrsConvertor({k: v for k, v in child.attrib.items() if k not in ["name"]})
+            for w in [x.__name__ for x in ttk.Widget.__subclasses__() if x.__name__.lower() != "widget"]:
+                TStyle.configure(f"{styleName}.T{w}",**Styles[styleName])
 
     applyChild(Win, root)
     return XmlTk(Win, Variables, IDWidgets)

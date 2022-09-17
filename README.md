@@ -21,7 +21,7 @@ targeted element
 attribute to get it via function in parsed application to do anything you want
 - <kbd>Variables</kbd> - To get user's input data, you can use variables how you can in normal Tkinter app,
 just declare it in XML file and then use its name to retrieve it, and also use it in design
-- <kbd>Configuration Classes</kbd> - Just like in HTML, you can create class with attributes and then
+- <kbd>Styles</kbd> - you can create style elements with attributes and then
 just link Widgets to apply one configuration to multiple elements
 
 ## Example
@@ -59,7 +59,62 @@ if __name__ == '__main__':
     app.mainloop() # To run app
 ```
 
-### Supported elements:
+## Syntax comparison with already existing tkinter xml package - Pygubu
+
+**Both syntaxes result into same app!!**
+
+`Pygubu syntax`
+
+```xml
+<interface version="1.2">
+    <object class="tk.Toplevel" id="mainwindow">
+        <property name="height">200</property>
+        <property name="resizable">both</property>
+        <property name="title" translatable="yes">Hello World App</property>
+        <property name="width">200</property>
+        <child>
+            <object class="ttk.Frame" id="mainframe">
+                <property name="height">200</property>
+                <property name="padding">20</property>
+                <property name="width">200</property>
+                <layout manager="pack">
+                    <property name="expand">true</property>
+                    <property name="side">top</property>
+                </layout>
+                <child>
+                    <object class="ttk.Label" id="label1">
+                        <property name="anchor">center</property>
+                        <property name="font">Helvetica 26</property>
+                        <property name="foreground">#0000b8</property>
+                        <property name="text" translatable="yes">Hello World !</property>
+                        <layout manager="pack">
+                            <property name="side">top</property>
+                        </layout>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>
+```
+
+`XMLTK syntax`
+
+```xml
+<Tk xmlns="Tkinter" geometry="200x200" title="Hello World App">
+    <T-Frame height="200" width="200" padding="20">
+        <T-Label anchor="center" font="Helvetica 26" foreground="#0000b8">
+            Hello World !
+            <pack side="top"/>
+        </T-Label>
+        <pack expand="true" side="top"/>
+    </T-Frame>
+</Tk>
+```
+
+## Supported elements:
+
+### tkinter
 
 - [X] Button
 - [X] Canvas *(Needs to be drawn on it by python)*
@@ -80,3 +135,22 @@ if __name__ == '__main__':
 - [X] Spinbox
 - [ ] Text
 - [ ] Toplevel
+
+### ttk
+
+- [X] Button
+- [X] Checkbutton
+- [X] Entry
+- [ ] Frame
+- [X] Label
+- [ ] Labelframe
+- [ ] Menubutton
+- [ ] Notebook
+- [ ] Panedwindow
+- [X] Progressbar
+- [X] Radiobutton
+- [X] Scale
+- [ ] Scrollbar
+- [X] Separator
+- [ ] Sizegrip
+- [ ] Treeview
