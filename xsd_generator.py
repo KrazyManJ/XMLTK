@@ -110,22 +110,67 @@ def generate():
     # WIDGET TYPE
     Xml += f'<xs:complexType name="Widget"><xs:complexContent><xs:extension base="BaseWidget">{GEOMETRY_MANIPULATOR}</xs:extension></xs:complexContent></xs:complexType>'
 
+
+    # MENU THINGS
+    Xml += """
+    <xs:complexType name="InnerMenu">
+        <xs:choice>
+            <xs:element name="Cascade" type="Cascade"/>
+            <xs:element name="Command" type="MenuCommand"/>
+            <xs:element name="Separator" type="MenuSeparator"/>
+            <xs:element name="Checkbutton" type="MenuCheckbutton"/>
+            <xs:element name="Radiobutton" type="MenuRadiobutton"/>
+        </xs:choice>
+    </xs:complexType>
+    """.strip().replace("\n", "").replace("    ", "")
+    Xml += xsd_extended_type("Cascade","InnerMenu",[
+        "accelerator","activebackground","activeforeground","background","bitmap",
+        "columnbreak","command","compound","font","foreground","hidemargin","image",
+        "label","menu","state","underline",
+    ])
+    Xml += xsd_complex_type("MenuCommand", [
+        "accelerator","activebackground","activeforeground","background",
+        "bitmap","columnbreak","command","compound","font","foreground",
+        "hidemargin","image","label","state","underline"
+    ])
+    Xml += xsd_complex_type("MenuSeparator", ["background"])
+    Xml += xsd_complex_type("MenuCheckbutton", [
+        "accelerator","activebackground","activeforeground","background",
+        "bitmap","columnbreak","command","compound","font","foreground",
+        "hidemargin","image","indicatoron","label","offvalue","onvalue",
+        "selectcolor","selectimage","state","underline","variable"
+    ])
+    Xml += xsd_complex_type("MenuRadiobutton", [
+        "accelerator","activebackground","activeforeground","background",
+        "bitmap","columnbreak","command","compound","font","foreground",
+        "hidemargin","image","indicatoron","label","selectcolor",
+        "selectimage","state","underline","value","variable",
+    ])
+
     # WIDGET WITH PARAMS
     for wT, prefix in [(tk.Widget,""),(ttk.Widget,"T-")]:
         for w in [w for w in wT.__subclasses__() if w.__name__.lower() != "widget"]:
             match w.__name__:
                 case "Listbox":
                     parent = "Packable"
+                case "Menu":
+                    parent = "InnerMenu"
                 case _:
                     parent = "Widget"
-            Xml += f'<xs:complexType name="{prefix}{w.__name__}"><xs:complexContent><xs:extension base="{parent}">'
+            if parent is not None:
+                Xml += f'<xs:complexType name="{prefix}{w.__name__}"><xs:complexContent><xs:extension base="{parent}">'
+            else:
+                Xml += f'<xs:complexType name="{prefix}{w.__name__}">'
             match w.__name__:
                 case "Listbox":
                     Xml += '<xs:choice><xs:element name="Line"/></xs:choice>'
                 case _:
                     pass
             for attr in list(w().configure().keys())+["id","style"]: Xml += attribute_declarator(attr)
-            Xml += '</xs:extension></xs:complexContent></xs:complexType>'
+            if parent is not None:
+                Xml += '</xs:extension></xs:complexContent></xs:complexType>'
+            else:
+                Xml += '</xs:complexType>'
 
     return etree.tostring(etree.fromstring(Xml + FOOT), pretty_print=True).decode().replace("  ", "    ")
 

@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 import tkinter as tk
 import tkinter.ttk as ttk
-from tkinter import Tk, Widget, Variable, PhotoImage
+from tkinter import Tk, Widget, Variable, PhotoImage, Menu
 from dataclasses import dataclass
 from typing import Callable
 import uuid
@@ -54,7 +54,10 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
     def clearNamespace(tag: str):
         return tag.split("}")[1] if tag.__contains__("}") else tag
 
-    def gridPackPlace(w: Widget, e: Element):
+    def widgetName(w: Widget | Tk):
+        return w.widgetName if isinstance(w,Widget) else "tk"
+
+    def gridPackPlace(w: Widget, parent: Widget, e: Element):
         placer = None
         try:
             placer = [chi for chi in e if clearNamespace(chi.tag) in PLACE_TAGS][0]
@@ -71,25 +74,42 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
     def applyChild(parentelem: Widget | Tk, xmldata: Element):
         for ch in [ch for ch in xmldata if clearNamespace(ch.tag) not in BLACKLIST_TAGS]:
             tag = clearNamespace(ch.tag)
-            if tag.startswith("T-"):
-                fc = getattr(ttk, tag.split("-")[1])
-            else:
-                fc = getattr(tk, tag)
-            elem = fc(parentelem)
-            if configureWidget(elem, ch):
-                tag = tag
-                if tag == "Listbox":
-                    for line in [l for l in ch if clearNamespace(l.tag) == "Line"]:
-                        elem.insert("end", line.text if line.text is not None else "")
+            if widgetName(parentelem) == "menu":
+                menucmd = getattr(parentelem,"add_"+tag.lower())
+                if tag == "Cascade":
+                    elem = Menu(tearoff=0)
+                    menucmd(label=ch.text.strip(),menu=elem)
+                    applyChild(elem,ch)
+                elif tag == "Separator":
+                    menucmd(ch.attrib)
                 else:
-                    applyChild(elem, ch)
+                    menucmd(label=ch.text.strip(),**attrsConvertor(ch.attrib,parentelem))
+            else:
+                if tag.startswith("T-"):
+                    fc = getattr(ttk, tag.split("-")[1])
+                else:
+                    fc = getattr(tk, tag)
+                elem = fc(parentelem)
+                if configureWidget(elem, parentelem, ch):
+                    tag = tag
+                    if tag == "Listbox":
+                        for line in [l for l in ch if clearNamespace(l.tag) == "Line"]:
+                            elem.insert("end", line.text if line.text is not None else "")
+                    else:
+                        applyChild(elem, ch)
 
-    def attrsConvertor(dataDict) -> dict:
+    def attrsConvertor(dataDict,widget) -> dict:
         if "font" in dataDict and dataDict["font"].__contains__(";"):
             dataDict["font"] = tuple(dataDict["font"].split(";", 3))
+        if "command" in dataDict:
+            if dataDict["command"] in functions:
+                fct = functions[dataDict["command"]]
+                dataDict["command"] = lambda: fct(Win, widget)
+            else:
+                del dataDict["command"]
         return dataDict
 
-    def configureWidget(widget: Widget, xmlelem: Element) -> bool:
+    def configureWidget(widget: Widget, parent: Widget, xmlelem: Element) -> bool:
 
         data: dict[str, any] = xmlelem.attrib
 
@@ -109,22 +129,18 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
             TStyle.configure(f"{styleId}.T{name}",**{k: v for k, v in data.items() if k not in widget.configure().keys()})
             data = {k: v for k, v in data.items() if k in widget.configure().keys()}
             data["style"] = f"{styleId}.T{name}"
-        data = attrsConvertor(data)
+        data = attrsConvertor(data,widget)
         if "id" in data:
             IDWidgets[data["id"]] = widget
             del data["id"]
-        if "command" in data:
-            if data["command"] in functions:
-                fct = functions[data["command"]]
-                data["command"] = lambda: fct(Win, widget)
-            else:
-                del data["command"]
         if "image" in data:
             photo = PhotoImage(file=data["image"])
             data["image"] = photo
             widget.image = photo
-
-        gridPackPlace(widget, xmlelem)
+        if widget.widgetName == "menu":
+            parent.configure(menu=widget)
+        else:
+            gridPackPlace(widget, parent, xmlelem)
 
         count = [ch for ch in xmlelem if clearNamespace(ch.tag) not in PLACE_TAGS].__len__()
         if count == 0 and xmlelem.text is not None and xmlelem.text.strip().__len__() != 0:
@@ -153,7 +169,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
             raise Exception("Style name attribute cannot contain spaces!")
         else:
             styleName = child.attrib["name"]
-            Styles[styleName] = attrsConvertor({k: v for k, v in child.attrib.items() if k not in ["name"]})
+            Styles[styleName] = attrsConvertor({k: v for k, v in child.attrib.items() if k not in ["name"]},Win)
             for w in [x.__name__ for x in ttk.Widget.__subclasses__() if x.__name__.lower() != "widget"]:
                 TStyle.configure(f"{styleName}.T{w}",**Styles[styleName])
 

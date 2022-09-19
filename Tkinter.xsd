@@ -373,6 +373,102 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="InnerMenu">
+        <xs:choice>
+            <xs:element name="Cascade" type="Cascade"/>
+            <xs:element name="Command" type="MenuCommand"/>
+            <xs:element name="Separator" type="MenuSeparator"/>
+            <xs:element name="Checkbutton" type="MenuCheckbutton"/>
+            <xs:element name="Radiobutton" type="MenuRadiobutton"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="Cascade">
+        <xs:complexContent>
+            <xs:extension base="InnerMenu">
+                <xs:attribute name="accelerator"/>
+                <xs:attribute name="activebackground"/>
+                <xs:attribute name="activeforeground"/>
+                <xs:attribute name="background"/>
+                <xs:attribute name="bitmap"/>
+                <xs:attribute name="columnbreak"/>
+                <xs:attribute name="command"/>
+                <xs:attribute name="compound" type="Compound"/>
+                <xs:attribute name="font"/>
+                <xs:attribute name="foreground"/>
+                <xs:attribute name="hidemargin"/>
+                <xs:attribute name="image" type="xs:anyURI"/>
+                <xs:attribute name="label"/>
+                <xs:attribute name="menu"/>
+                <xs:attribute name="state" type="State"/>
+                <xs:attribute name="underline"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MenuCommand">
+        <xs:attribute name="accelerator"/>
+        <xs:attribute name="activebackground"/>
+        <xs:attribute name="activeforeground"/>
+        <xs:attribute name="background"/>
+        <xs:attribute name="bitmap"/>
+        <xs:attribute name="columnbreak"/>
+        <xs:attribute name="command"/>
+        <xs:attribute name="compound" type="Compound"/>
+        <xs:attribute name="font"/>
+        <xs:attribute name="foreground"/>
+        <xs:attribute name="hidemargin"/>
+        <xs:attribute name="image" type="xs:anyURI"/>
+        <xs:attribute name="label"/>
+        <xs:attribute name="state" type="State"/>
+        <xs:attribute name="underline"/>
+    </xs:complexType>
+    <xs:complexType name="MenuSeparator">
+        <xs:attribute name="background"/>
+    </xs:complexType>
+    <xs:complexType name="MenuCheckbutton">
+        <xs:attribute name="accelerator"/>
+        <xs:attribute name="activebackground"/>
+        <xs:attribute name="activeforeground"/>
+        <xs:attribute name="background"/>
+        <xs:attribute name="bitmap"/>
+        <xs:attribute name="columnbreak"/>
+        <xs:attribute name="command"/>
+        <xs:attribute name="compound" type="Compound"/>
+        <xs:attribute name="font"/>
+        <xs:attribute name="foreground"/>
+        <xs:attribute name="hidemargin"/>
+        <xs:attribute name="image" type="xs:anyURI"/>
+        <xs:attribute name="indicatoron"/>
+        <xs:attribute name="label"/>
+        <xs:attribute name="offvalue"/>
+        <xs:attribute name="onvalue"/>
+        <xs:attribute name="selectcolor"/>
+        <xs:attribute name="selectimage"/>
+        <xs:attribute name="state" type="State"/>
+        <xs:attribute name="underline"/>
+        <xs:attribute name="variable"/>
+    </xs:complexType>
+    <xs:complexType name="MenuRadiobutton">
+        <xs:attribute name="accelerator"/>
+        <xs:attribute name="activebackground"/>
+        <xs:attribute name="activeforeground"/>
+        <xs:attribute name="background"/>
+        <xs:attribute name="bitmap"/>
+        <xs:attribute name="columnbreak"/>
+        <xs:attribute name="command"/>
+        <xs:attribute name="compound" type="Compound"/>
+        <xs:attribute name="font"/>
+        <xs:attribute name="foreground"/>
+        <xs:attribute name="hidemargin"/>
+        <xs:attribute name="image" type="xs:anyURI"/>
+        <xs:attribute name="indicatoron"/>
+        <xs:attribute name="label"/>
+        <xs:attribute name="selectcolor"/>
+        <xs:attribute name="selectimage"/>
+        <xs:attribute name="state" type="State"/>
+        <xs:attribute name="underline"/>
+        <xs:attribute name="value"/>
+        <xs:attribute name="variable"/>
+    </xs:complexType>
     <xs:complexType name="Button">
         <xs:complexContent>
             <xs:extension base="Widget">
@@ -651,7 +747,7 @@
     </xs:complexType>
     <xs:complexType name="Menu">
         <xs:complexContent>
-            <xs:extension base="Widget">
+            <xs:extension base="InnerMenu">
                 <xs:attribute name="activebackground"/>
                 <xs:attribute name="activeborderwidth"/>
                 <xs:attribute name="activeforeground"/>
