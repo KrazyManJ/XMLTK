@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Callable
 import uuid
 import warnings
+import pyglet.font
 
 __all__ = ["parse"]
 
@@ -28,6 +29,8 @@ class XmlTk:
 class XMLTKParseException(Exception):
     __module__ = Exception.__module__
 
+class XMLSyntaxWarning(Warning):
+    __module__ = Warning.__module__
 
 def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None], None]] | None = None):
     Win = Tk()
@@ -38,7 +41,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
         "rowconfig": Widget.rowconfigure.__name__,
         "columnconfig": Widget.columnconfigure.__name__
     }
-    BLACKLIST_TAGS = PLACE_TAGS + list(GRID_CONFIGURATORS.keys()) + ["Variable", "Style"]
+    BLACKLIST_TAGS = PLACE_TAGS + list(GRID_CONFIGURATORS.keys()) + ["Variable", "Style","Font"]
     ROOT_ATTRIBS = {
         "geometry": Win.geometry,
         "title": Win.title,
@@ -52,6 +55,9 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
 
     if functions is None:
         functions = {}
+
+    def XMLSyntaxWarn(text):
+        warnings.warn(text, category=XMLSyntaxWarning,stacklevel=inspect.stack().__len__())
 
     def clearNamespace(tag: str):
         return tag.split("}")[1] if tag.__contains__("}") else tag
@@ -77,15 +83,20 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
         for ch in [ch for ch in xmldata if clearNamespace(ch.tag) not in BLACKLIST_TAGS]:
             tag = clearNamespace(ch.tag)
             if widgetName(parentelem) == "menu":
-                menucmd = getattr(parentelem,"add_"+tag.lower())
-                if tag == "Cascade":
-                    elem = Menu(tearoff=0)
-                    menucmd(label=ch.text.strip(),menu=elem)
-                    applyChild(elem,ch)
-                elif tag == "Separator":
-                    menucmd(ch.attrib)
-                else:
-                    menucmd(label=ch.text.strip(),**attrsConvertor(ch.attrib,parentelem))
+                try:
+                    menucmd = getattr(parentelem,"add_"+tag.lower())
+                except:
+                    XMLSyntaxWarn(f"Invalid tag '{tag}' inside Menu widget!")
+                    menucmd = None
+                if menucmd is not None:
+                    if tag == "Cascade":
+                        elem = Menu(tearoff=0)
+                        menucmd(label=ch.text.strip(),menu=elem)
+                        applyChild(elem,ch)
+                    elif tag == "Separator":
+                        menucmd(ch.attrib)
+                    else:
+                        menucmd(label=ch.text.strip(),**attrsConvertor(ch.attrib,parentelem))
             else:
                 if tag.startswith("T-"):
                     fc = getattr(ttk, tag.split("-")[1])
@@ -111,7 +122,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
                 fct = functions[fctName]
                 dataDict["command"] = lambda: fct(Win, widget, fctArgs)
             else:
-                warnings.warn(f"Invalid function name '{fctName}'!",category=SyntaxWarning,stacklevel=inspect.stack().__len__())
+                XMLSyntaxWarn(f"Invalid function name '{fctName}'!")
                 del dataDict["command"]
         return dataDict
 
@@ -144,6 +155,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
             data["image"] = photo
             widget.image = photo
         if widget.widgetName == "menu":
+            data["tearoff"] = 0
             parent.configure(menu=widget)
         else:
             gridPackPlace(widget, parent, xmlelem)
@@ -169,6 +181,9 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
 
     for child in [child for child in root if clearNamespace(child.tag) == "Variable" and "name" in child.attrib]:
         Variables[child.attrib["name"]] = Variable(**child.attrib)
+
+    for child in [child for child in root if clearNamespace(child.tag) == "Font" and "path" in child.attrib]:
+        pyglet.font.add_file(child.attrib["path"])
 
     for child in [child for child in root if clearNamespace(child.tag) == "Style" and "name" in child.attrib]:
         if child.attrib["name"].__contains__(" "):

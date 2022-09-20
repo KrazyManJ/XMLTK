@@ -145,6 +145,9 @@
         <xs:attribute name="sashwidth"/>
         <xs:attribute name="showhandle"/>
     </xs:complexType>
+    <xs:complexType name="Font">
+        <xs:attribute name="path" use="required"/>
+    </xs:complexType>
     <xs:simpleType name="State" final="restriction">
         <xs:restriction base="xs:string">
             <xs:enumeration value="normal"/>
@@ -237,6 +240,7 @@
                 <xs:sequence maxOccurs="unbounded" minOccurs="0">
                     <xs:element name="Variable" type="Variable"/>
                     <xs:element name="Style" type="Style"/>
+                    <xs:element name="Font" type="Font"/>
                 </xs:sequence>
                 <xs:attribute name="title"/>
                 <xs:attribute name="geometry"/>

@@ -23,6 +23,8 @@ attribute to get it via function in parsed application to do anything you want
 just declare it in XML file and then use its name to retrieve it, and also use it in design
 - <kbd>Styles</kbd> - you can create style elements with attributes and then
 just link Widgets to apply one configuration to multiple elements
+- <kbd>Custom Fonts</kbd> - with XMLTK you can import custom fonts from file using filepath,
+and then use them anywhere in your application
 
 ## Example
 

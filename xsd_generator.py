@@ -74,18 +74,20 @@ def generate():
     Xml = HEAD + '<xs:element name="Tk" type="Tk"/>'
     # VARIABLE
     Xml += xsd_complex_type("Variable", ["name", "value"], ["name"])
-    # CONFIG CLASS
+    # STYLE CONFIG
     AllConfigs = []
     for w in [w for w in tk.Widget.__subclasses__() if w.__name__.lower() != "widget"]:
         for a in w().configure().keys():
             if a not in AllConfigs:
                 AllConfigs.append(a)
     Xml += xsd_complex_type("Style",["name","padding"]+AllConfigs,["name"])
+    # FONT
+    Xml += xsd_complex_type("Font",["path"],["path"])
     # ENUMS
     for name, attrs in ENUMS: Xml += xsd_enumeration(name, attrs)
     # TK
     Xml += xsd_extended_type("Tk", "BaseWidget", TK_ATTRS + list(tk.Tk().configure().keys()),
-        f'<xs:sequence maxOccurs="unbounded" minOccurs="0">{xsd_element("Variable","Variable")}{xsd_element("Style","Style")}</xs:sequence>'
+        f'<xs:sequence maxOccurs="unbounded" minOccurs="0">{xsd_element("Variable","Variable")}{xsd_element("Style","Style")}{xsd_element("Font","Font")}</xs:sequence>'
                              )
     # ROW / COLUMN CONFIG
     Xml += xsd_complex_type("RowColumnConfig", ["index"] + list(tk.Button().grid_rowconfigure(index="0").keys()))
