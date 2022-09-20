@@ -1,3 +1,4 @@
+import inspect
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element
 import tkinter as tk
@@ -6,6 +7,7 @@ from tkinter import Tk, Widget, Variable, PhotoImage, Menu
 from dataclasses import dataclass
 from typing import Callable
 import uuid
+import warnings
 
 __all__ = ["parse"]
 
@@ -27,7 +29,7 @@ class XMLTKParseException(Exception):
     __module__ = Exception.__module__
 
 
-def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | None = None):
+def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None], None]] | None = None):
     Win = Tk()
 
     WIN_IGNORE_ATTRS = ["title", "geometry", "icon", "resizable"]
@@ -54,10 +56,10 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
     def clearNamespace(tag: str):
         return tag.split("}")[1] if tag.__contains__("}") else tag
 
-    def widgetName(w: Widget | Tk):
-        return w.widgetName if isinstance(w,Widget) else "tk"
+    def widgetName(widget: Widget | Tk):
+        return widget.widgetName if isinstance(widget, Widget) else "tk"
 
-    def gridPackPlace(w: Widget, parent: Widget, e: Element):
+    def gridPackPlace(widget: Widget, parent: Widget, e: Element):
         placer = None
         try:
             placer = [chi for chi in e if clearNamespace(chi.tag) in PLACE_TAGS][0]
@@ -65,11 +67,11 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
             placer = None
         if placer is not None:
             tag = clearNamespace(placer.tag)
-            getattr(w, tag)(placer.attrib)
+            getattr(widget, tag)(placer.attrib)
         else:
-            w.pack()
+            widget.pack()
         for ch in [ch for ch in e if clearNamespace(ch.tag) in GRID_CONFIGURATORS.keys()]:
-            getattr(w, GRID_CONFIGURATORS[clearNamespace(ch.tag)])(**ch.attrib)
+            getattr(widget, GRID_CONFIGURATORS[clearNamespace(ch.tag)])(**ch.attrib)
 
     def applyChild(parentelem: Widget | Tk, xmldata: Element):
         for ch in [ch for ch in xmldata if clearNamespace(ch.tag) not in BLACKLIST_TAGS]:
@@ -102,10 +104,14 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget], None]] | No
         if "font" in dataDict and dataDict["font"].__contains__(";"):
             dataDict["font"] = tuple(dataDict["font"].split(";", 3))
         if "command" in dataDict:
-            if dataDict["command"] in functions:
-                fct = functions[dataDict["command"]]
-                dataDict["command"] = lambda: fct(Win, widget)
+            cmd:str = dataDict["command"]
+            fctName = cmd.split("(")[0]
+            fctArgs = cmd[cmd.find("(")+1:cmd.find(")")] if cmd.__contains__("(") and cmd.__contains__(")") else None
+            if fctName in functions:
+                fct = functions[fctName]
+                dataDict["command"] = lambda: fct(Win, widget, fctArgs)
             else:
+                warnings.warn(f"Invalid function name '{fctName}'!",category=SyntaxWarning,stacklevel=inspect.stack().__len__())
                 del dataDict["command"]
         return dataDict
 
