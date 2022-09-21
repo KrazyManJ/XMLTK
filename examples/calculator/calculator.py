@@ -8,20 +8,18 @@ This example of calculator app uses all unusual ascpets/syntax that XMLTK offers
 
 """
 
-from tkinter import Widget
-
 import XMLTK
 
 if __name__ == '__main__':
-    def insert(win, widget: Widget):
+    def insert(win, widget, args):
         display.set(str(display.get()) + widget.configure()["text"][4])
 
 
-    def clear(win, widget):
+    def clear(win, widget, tid):
         display.set("")
 
 
-    def equals(win, widget):
+    def equals(win, widget, tid):
         try:
             display.set(eval(display.get()))
         except:
