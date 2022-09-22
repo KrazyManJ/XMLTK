@@ -105,7 +105,7 @@ def generate():
     Xml += f'<xs:complexType name="BaseWidget"><xs:choice maxOccurs="unbounded" minOccurs="0">'
     for w in [w for w in tk.Widget.__subclasses__() if w.__name__.lower() != "widget"]: Xml += f'<xs:element name="{w.__name__}" type="{w.__name__}"/>'
     for w in ttk.Widget.__subclasses__(): Xml += f'<xs:element name="T-{w.__name__}" type="T-{w.__name__}"/>'
-    Xml += f'</xs:choice></xs:complexType>'
+    Xml += f'<xs:element name="ToolTip" type="ToolTip"/></xs:choice></xs:complexType>'
 
     # PACKABLE ()
     Xml += f'<xs:complexType name="Packable">{GEOMETRY_MANIPULATOR}</xs:complexType>'
@@ -113,6 +113,8 @@ def generate():
     # WIDGET TYPE
     Xml += f'<xs:complexType name="Widget"><xs:complexContent><xs:extension base="BaseWidget">{GEOMETRY_MANIPULATOR}</xs:extension></xs:complexContent></xs:complexType>'
 
+    # TOOLTIP
+    Xml += xsd_extended_type("ToolTip","Label",["showtime"])
 
     # MENU THINGS
     Xml += """

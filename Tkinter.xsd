@@ -351,6 +351,7 @@
             <xs:element name="T-Separator" type="T-Separator"/>
             <xs:element name="T-Sizegrip" type="T-Sizegrip"/>
             <xs:element name="T-Treeview" type="T-Treeview"/>
+            <xs:element name="ToolTip" type="ToolTip"/>
         </xs:choice>
     </xs:complexType>
     <xs:complexType name="Packable">
@@ -380,6 +381,13 @@
                         <xs:element name="rowconfig" type="RowColumnConfig"/>
                     </xs:choice>
                 </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ToolTip">
+        <xs:complexContent>
+            <xs:extension base="Label">
+                <xs:attribute name="showtime"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

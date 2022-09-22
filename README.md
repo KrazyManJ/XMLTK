@@ -25,6 +25,7 @@ just declare it in XML file and then use its name to retrieve it, and also use i
 just link Widgets to apply one configuration to multiple elements
 - <kbd>Custom Fonts</kbd> - with XMLTK you can import custom fonts from file using filepath,
 and then use them anywhere in your application
+- <kbd>Hover Tooltips</kbd> - add custom hints to your program by using tooltips (text that shows upon hovering over widget)
 
 ## Example
 
