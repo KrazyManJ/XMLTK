@@ -158,6 +158,8 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
         if widget.widgetName == "menu":
             data["tearoff"] = 0
             parent.configure({"menu": widget})
+        elif widgetName(parent) in ["panedwindow","ttk::panedwindow"]:
+            parent.add(widget)
         else:
             gridPackPlace(widget, parent, xmlelem)
 

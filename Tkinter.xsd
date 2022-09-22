@@ -99,7 +99,7 @@
         <xs:attribute name="from"/>
         <xs:attribute name="label"/>
         <xs:attribute name="length"/>
-        <xs:attribute name="orient"/>
+        <xs:attribute name="orient" type="Orient"/>
         <xs:attribute name="resolution"/>
         <xs:attribute name="showvalue"/>
         <xs:attribute name="sliderlength"/>
@@ -232,6 +232,12 @@
             <xs:enumeration value="true false"/>
             <xs:enumeration value="false true"/>
             <xs:enumeration value="false false"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="Orient" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="horizontal"/>
+            <xs:enumeration value="vertical"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="Tk">
@@ -916,7 +922,7 @@
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="label"/>
                 <xs:attribute name="length"/>
-                <xs:attribute name="orient"/>
+                <xs:attribute name="orient" type="Orient"/>
                 <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="repeatdelay"/>
                 <xs:attribute name="repeatinterval"/>
@@ -952,7 +958,7 @@
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="jump"/>
-                <xs:attribute name="orient"/>
+                <xs:attribute name="orient" type="Orient"/>
                 <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="repeatdelay"/>
                 <xs:attribute name="repeatinterval"/>
@@ -1117,7 +1123,7 @@
                 <xs:attribute name="handlesize"/>
                 <xs:attribute name="height"/>
                 <xs:attribute name="opaqueresize"/>
-                <xs:attribute name="orient"/>
+                <xs:attribute name="orient" type="Orient"/>
                 <xs:attribute name="proxybackground"/>
                 <xs:attribute name="proxyborderwidth"/>
                 <xs:attribute name="proxyrelief"/>
@@ -1310,7 +1316,7 @@
     <xs:complexType name="T-Panedwindow">
         <xs:complexContent>
             <xs:extension base="Widget">
-                <xs:attribute name="orient"/>
+                <xs:attribute name="orient" type="Orient"/>
                 <xs:attribute name="width"/>
                 <xs:attribute name="height"/>
                 <xs:attribute name="takefocus"/>
@@ -1325,7 +1331,7 @@
     <xs:complexType name="T-Progressbar">
         <xs:complexContent>
             <xs:extension base="Widget">
-                <xs:attribute name="orient"/>
+                <xs:attribute name="orient" type="Orient"/>
                 <xs:attribute name="length"/>
                 <xs:attribute name="mode"/>
                 <xs:attribute name="maximum"/>
@@ -1369,7 +1375,7 @@
             <xs:extension base="Widget">
                 <xs:attribute name="command"/>
                 <xs:attribute name="variable"/>
-                <xs:attribute name="orient"/>
+                <xs:attribute name="orient" type="Orient"/>
                 <xs:attribute name="from"/>
                 <xs:attribute name="to"/>
                 <xs:attribute name="value"/>
@@ -1388,7 +1394,7 @@
         <xs:complexContent>
             <xs:extension base="Widget">
                 <xs:attribute name="command"/>
-                <xs:attribute name="orient"/>
+                <xs:attribute name="orient" type="Orient"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="cursor"/>
                 <xs:attribute name="style"/>
@@ -1401,7 +1407,7 @@
     <xs:complexType name="T-Separator">
         <xs:complexContent>
             <xs:extension base="Widget">
-                <xs:attribute name="orient"/>
+                <xs:attribute name="orient" type="Orient"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="cursor"/>
                 <xs:attribute name="style"/>

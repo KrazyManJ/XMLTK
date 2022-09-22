@@ -17,7 +17,8 @@ def generate():
         ("Side", ["right","left","top","bottom"]),
         ("Compound", ["top", "left", "center", "right", "bottom", "none"]),
         ("OverRelief", ["raised", "sunken", "groove", "ridge", "flat"]),
-        ("Resizable", ["true true", "true false", "false true", "false false"])
+        ("Resizable", ["true true", "true false", "false true", "false false"]),
+        ("Orient", ["horizontal","vertical"])
     ]
     TYPES = {
         "image": "xs:anyURI",

@@ -130,7 +130,7 @@ if __name__ == '__main__':
 - [X] Menubutton
 - [X] Message
 - [X] OptionMenu
-- [ ] PanedWindow
+- [X] PanedWindow
 - [X] Radiobutton
 - [X] Scale
 - [ ] Scrollbar
@@ -148,7 +148,7 @@ if __name__ == '__main__':
 - [X] Labelframe
 - [X] Menubutton
 - [ ] Notebook
-- [ ] Panedwindow
+- [X] Panedwindow
 - [X] Progressbar
 - [X] Radiobutton
 - [X] Scale
