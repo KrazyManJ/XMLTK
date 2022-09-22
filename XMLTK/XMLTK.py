@@ -3,24 +3,26 @@ import xml.etree.ElementTree as XML
 from xml.etree.ElementTree import Element as XMLElement
 import tkinter as tk
 import tkinter.ttk as ttk
-from tkinter import Tk, Widget, Variable, PhotoImage, Menu
+from tkinter import Tk, Widget, Variable, PhotoImage, Menu, Toplevel
 from dataclasses import dataclass
 from typing import Callable
 from uuid import uuid4
 from warnings import warn
 from pyglet.font import add_file as add_font_file
+from enum import Enum
 
-__all__ = ["parse"]
-
+class ParseType(Enum):
+    TK = Tk
+    TOPLEVEL = Toplevel
 
 @dataclass(frozen=True)
 class XmlTk:
-    Tk: Tk
+    Win: Tk | Toplevel
     Variables: dict[str, Variable]
     __IDWidgets: dict[str, Widget]
 
     def mainloop(self, n: int = 0):
-        self.Tk.mainloop(n)
+        self.Win.mainloop(n)
 
     def getWidgetById(self, wantedId: str) -> Widget | None:
         return self.__IDWidgets.get(wantedId, None)
@@ -34,8 +36,8 @@ class XMLSyntaxWarning(Warning):
     __module__ = Warning.__module__
 
 
-def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None], None]] | None = None):
-    Win = Tk()
+def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None], None]] | None = None, parseType = ParseType.TK):
+    Win = parseType.value()
 
     WIN_IGNORE_ATTRS = ["title", "geometry", "icon", "resizable"]
     PLACE_TAGS = ["pack", "grid", "place"]
@@ -122,7 +124,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
             fctArgs = cmd[cmd.find("(") + 1:cmd.find(")")] if cmd.__contains__("(") and cmd.__contains__(")") else None
             if fctName in functions:
                 fct = functions[fctName]
-                dataDict["command"] = lambda: fct(**{"win":Win, "widget":widget, "tid":fctArgs})
+                dataDict["command"] = lambda: fct(Win, widget, fctArgs)
             else:
                 XMLSyntaxWarn(f"Invalid function name '{fctName}'!")
                 del dataDict["command"]

@@ -136,7 +136,7 @@ if __name__ == '__main__':
 - [ ] Scrollbar
 - [X] Spinbox
 - [ ] Text
-- [ ] Toplevel
+- [X] Toplevel
 
 ### ttk
 
