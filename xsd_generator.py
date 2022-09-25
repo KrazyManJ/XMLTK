@@ -1,3 +1,4 @@
+import json
 import tkinter as tk
 import tkinter.ttk as ttk
 from lxml import etree
@@ -38,6 +39,12 @@ def generate():
     </xs:sequence>
     """.strip().replace("\n", "").replace("    ", "")
 
+    Documentation = json.load(open("documentation.json"))
+
+
+    def xsd_documentation(description):
+        return f'<xs:annotation><xs:documentation>{description}</xs:documentation></xs:annotation>'
+
     def xsd_enumeration(objName, values) -> str:
         xml = f'<xs:simpleType name="{objName}" final="restriction"><xs:restriction base="xs:string">'
         for val in values: xml += f'<xs:enumeration value="{val}"/>'
@@ -45,31 +52,44 @@ def generate():
         return xml
 
     def xsd_extended_type(objName, extends, objAttrs, otherBody="") -> str:
-        xml = f'<xs:complexType name="{objName}"><xs:complexContent><xs:extension base="{extends}">' + otherBody
-        for a in objAttrs: xml += attribute_declarator(a)
+        xml = f'<xs:complexType name="{objName}">'
+        doc = Documentation["cTypes"].get(objName, None)
+        if doc is not None:
+            xml += xsd_documentation(doc)
+        xml += f'<xs:complexContent><xs:extension base="{extends}">' + otherBody
+        for a in objAttrs: xml += xsd_attribute(objName, a)
         xml += f'</xs:extension></xs:complexContent></xs:complexType>'
         return xml
 
-    def xsd_complex_type(objName, objAttrs, requiredAttrs=None) -> str:
+    def xsd_complex_type(objName, objAttrs, requiredAttrs=None, otherBody="") -> str:
         if requiredAttrs is None:
             requiredAttrs = []
         xml = f'<xs:complexType name="{objName}">'
-        for a in objAttrs: xml += attribute_declarator(a, a in requiredAttrs)
+        xml += otherBody
+        doc = Documentation["cTypes"].get(objName, None)
+        if doc is not None:
+            xml += xsd_documentation(doc)
+        for a in objAttrs:
+            xml += xsd_attribute(objName, a, a in requiredAttrs)
         xml += '</xs:complexType>'
         return xml
 
     def xsd_element(elemName, elemType):
         return f'<xs:element name="{elemName}" type="{elemType}"/>'
 
-    def attribute_declarator(attrName, required=False) -> str:
+    def xsd_attribute(objName,attrName, required=False) -> str:
         required, aType = 'use="required"' if required else "", ""
         if attrName.capitalize() in [t for t, k in ENUMS]:
             aType = f'type="{attrName.capitalize()}"'
         elif attrName in TYPES.keys():
             aType = f'type="{TYPES[attrName]}"'
-        return f'<xs:attribute name="{attrName}" {aType} {required}/>'
-
-    Win = tk.Tk()
+        xml = f'<xs:attribute name="{attrName}" {aType} {required}>'
+        if Documentation["Attribs"].get(f"{objName}:{attrName}", None) is not None:
+            xml += xsd_documentation(Documentation["Attribs"][f"{objName}:{attrName}"])
+        elif Documentation["Attribs"].get(f"{attrName}", None) is not None:
+            xml += xsd_documentation(Documentation["Attribs"][f"{attrName}"])
+        xml += "</xs:attribute>"
+        return xml
 
     # START
     Xml = HEAD + '<xs:element name="Tk" type="Tk"/>'
@@ -114,7 +134,7 @@ def generate():
     Xml += f'<xs:complexType name="Widget"><xs:complexContent><xs:extension base="BaseWidget">{GEOMETRY_MANIPULATOR}</xs:extension></xs:complexContent></xs:complexType>'
 
     # TOOLTIP
-    Xml += xsd_extended_type("ToolTip","Label",["showtime"])
+    Xml += xsd_complex_type("ToolTip",["showtime"]+list(tk.Label().configure().keys()))
 
     # MENU THINGS
     Xml += """
@@ -153,29 +173,19 @@ def generate():
     ])
 
     # WIDGET WITH PARAMS
-    for wT, prefix in [(tk.Widget,""),(ttk.Widget,"T-")]:
+    for wT, prefix in [(tk.Widget, ""), (ttk.Widget, "T-")]:
         for w in [w for w in wT.__subclasses__() if w.__name__.lower() != "widget"]:
             match w.__name__:
                 case "Listbox":
-                    parent = "Packable"
+                    parent,otherBody = "Packable", '<xs:choice><xs:element name="Line"/></xs:choice>'
                 case "Menu":
-                    parent = "InnerMenu"
+                    parent,otherBody = "InnerMenu", ""
                 case _:
-                    parent = "Widget"
+                    parent,otherBody = "Widget",""
             if parent is not None:
-                Xml += f'<xs:complexType name="{prefix}{w.__name__}"><xs:complexContent><xs:extension base="{parent}">'
+                Xml += xsd_extended_type(f"{prefix}{w.__name__}",parent,list(w().configure().keys()) + ["id", "style"],otherBody)
             else:
-                Xml += f'<xs:complexType name="{prefix}{w.__name__}">'
-            match w.__name__:
-                case "Listbox":
-                    Xml += '<xs:choice><xs:element name="Line"/></xs:choice>'
-                case _:
-                    pass
-            for attr in list(w().configure().keys())+["id","style"]: Xml += attribute_declarator(attr)
-            if parent is not None:
-                Xml += '</xs:extension></xs:complexContent></xs:complexType>'
-            else:
-                Xml += '</xs:complexType>'
+                Xml += xsd_complex_type(f"{prefix}{w.__name__}",list(w().configure().keys()) + ["id", "style"])
 
     return etree.tostring(etree.fromstring(Xml + FOOT), pretty_print=True).decode().replace("  ", "    ")
 

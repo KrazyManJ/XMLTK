@@ -1,11 +1,29 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="Tkinter">
     <xs:element name="Tk" type="Tk"/>
     <xs:complexType name="Variable">
-        <xs:attribute name="name" use="required"/>
-        <xs:attribute name="value"/>
+        <xs:annotation>
+            <xs:documentation>Accessible fields to gather input from app. Can be modified.</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="name" use="required">
+            <xs:annotation>
+                <xs:documentation>Name of Variable</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="value">
+            <xs:annotation>
+                <xs:documentation>Default value of Variable after start</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:complexType name="Style">
-        <xs:attribute name="name" use="required"/>
+        <xs:annotation>
+            <xs:documentation>Holders of Widget configurations; can be used with style attribute to apply configuration of this holder</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="name" use="required">
+            <xs:annotation>
+                <xs:documentation>Name of Style holder</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="padding"/>
         <xs:attribute name="activebackground"/>
         <xs:attribute name="activeforeground"/>
@@ -30,8 +48,16 @@
         <xs:attribute name="image" type="xs:anyURI"/>
         <xs:attribute name="justify" type="Justify"/>
         <xs:attribute name="overrelief"/>
-        <xs:attribute name="padx"/>
-        <xs:attribute name="pady"/>
+        <xs:attribute name="padx">
+            <xs:annotation>
+                <xs:documentation>Horizontal padding of element</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="pady">
+            <xs:annotation>
+                <xs:documentation>Vertical padding of element</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="relief" type="Relief"/>
         <xs:attribute name="repeatdelay"/>
         <xs:attribute name="repeatinterval"/>
@@ -146,7 +172,14 @@
         <xs:attribute name="showhandle"/>
     </xs:complexType>
     <xs:complexType name="Font">
-        <xs:attribute name="path" use="required"/>
+        <xs:annotation>
+            <xs:documentation>Allows to import font from file specified by filepath</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="path" use="required">
+            <xs:annotation>
+                <xs:documentation>Path to font file</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:simpleType name="State" final="restriction">
         <xs:restriction base="xs:string">
@@ -241,6 +274,9 @@
         </xs:restriction>
     </xs:simpleType>
     <xs:complexType name="Tk">
+        <xs:annotation>
+            <xs:documentation>Main Tkinter window or Toplevel element. It is root element of whole file.</xs:documentation>
+        </xs:annotation>
         <xs:complexContent>
             <xs:extension base="BaseWidget">
                 <xs:sequence maxOccurs="unbounded" minOccurs="0">
@@ -248,10 +284,26 @@
                     <xs:element name="Style" type="Style"/>
                     <xs:element name="Font" type="Font"/>
                 </xs:sequence>
-                <xs:attribute name="title"/>
-                <xs:attribute name="geometry"/>
-                <xs:attribute name="resizable" type="Resizable"/>
-                <xs:attribute name="icon" type="xs:anyURI"/>
+                <xs:attribute name="title">
+                    <xs:annotation>
+                        <xs:documentation>Title text of whole window</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="geometry">
+                    <xs:annotation>
+                        <xs:documentation>Window size and position, in format of (WIDTH)x(HEIGHT)+(X)+(Y).</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="resizable" type="Resizable">
+                    <xs:annotation>
+                        <xs:documentation>If windows is resizable, in format of 'horizontal vertical' and replaced both values with 'true' or 'false' </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="icon" type="xs:anyURI">
+                    <xs:annotation>
+                        <xs:documentation>Path to file for displayed icon</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="class"/>
@@ -268,8 +320,16 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="visual"/>
                 <xs:attribute name="width"/>
@@ -277,21 +337,53 @@
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="RowColumnConfig">
-        <xs:attribute name="index"/>
-        <xs:attribute name="minsize"/>
-        <xs:attribute name="pad"/>
+        <xs:attribute name="index">
+            <xs:annotation>
+                <xs:documentation>Indexes of row/column to be modified. Use space as delimeter for multiple indexes</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="minsize">
+            <xs:annotation>
+                <xs:documentation>Minimal size of row/column</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="pad">
+            <xs:annotation>
+                <xs:documentation>Padding of each row/column</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="uniform"/>
-        <xs:attribute name="weight"/>
+        <xs:attribute name="weight">
+            <xs:annotation>
+                <xs:documentation>Weight of each row/column</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     <xs:complexType name="Grid">
-        <xs:attribute name="column"/>
-        <xs:attribute name="row"/>
+        <xs:attribute name="column">
+            <xs:annotation>
+                <xs:documentation>Column index of widget to place in</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="row">
+            <xs:annotation>
+                <xs:documentation>Row index of widget to place in</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="columnspan"/>
         <xs:attribute name="rowspan"/>
         <xs:attribute name="ipadx"/>
         <xs:attribute name="ipady"/>
-        <xs:attribute name="padx"/>
-        <xs:attribute name="pady"/>
+        <xs:attribute name="padx">
+            <xs:annotation>
+                <xs:documentation>Horizontal padding of element</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="pady">
+            <xs:annotation>
+                <xs:documentation>Vertical padding of element</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="sticky"/>
     </xs:complexType>
     <xs:complexType name="Pack">
@@ -300,8 +392,16 @@
         <xs:attribute name="fill" type="Fill"/>
         <xs:attribute name="ipadx"/>
         <xs:attribute name="ipady"/>
-        <xs:attribute name="padx"/>
-        <xs:attribute name="pady"/>
+        <xs:attribute name="padx">
+            <xs:annotation>
+                <xs:documentation>Horizontal padding of element</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="pady">
+            <xs:annotation>
+                <xs:documentation>Vertical padding of element</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="side" type="Side"/>
     </xs:complexType>
     <xs:complexType name="Place">
@@ -385,11 +485,48 @@
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="ToolTip">
-        <xs:complexContent>
-            <xs:extension base="Label">
-                <xs:attribute name="showtime"/>
-            </xs:extension>
-        </xs:complexContent>
+        <xs:annotation>
+            <xs:documentation>Text of this element will be applied to the parent widget as tooltip</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="showtime"/>
+        <xs:attribute name="activebackground"/>
+        <xs:attribute name="activeforeground"/>
+        <xs:attribute name="anchor" type="Anchor"/>
+        <xs:attribute name="background"/>
+        <xs:attribute name="bd"/>
+        <xs:attribute name="bg"/>
+        <xs:attribute name="bitmap"/>
+        <xs:attribute name="borderwidth"/>
+        <xs:attribute name="compound" type="Compound"/>
+        <xs:attribute name="cursor"/>
+        <xs:attribute name="disabledforeground"/>
+        <xs:attribute name="fg"/>
+        <xs:attribute name="font"/>
+        <xs:attribute name="foreground"/>
+        <xs:attribute name="height"/>
+        <xs:attribute name="highlightbackground"/>
+        <xs:attribute name="highlightcolor"/>
+        <xs:attribute name="highlightthickness"/>
+        <xs:attribute name="image" type="xs:anyURI"/>
+        <xs:attribute name="justify" type="Justify"/>
+        <xs:attribute name="padx">
+            <xs:annotation>
+                <xs:documentation>Horizontal padding of element</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="pady">
+            <xs:annotation>
+                <xs:documentation>Vertical padding of element</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="relief" type="Relief"/>
+        <xs:attribute name="state" type="State"/>
+        <xs:attribute name="takefocus"/>
+        <xs:attribute name="text"/>
+        <xs:attribute name="textvariable"/>
+        <xs:attribute name="underline"/>
+        <xs:attribute name="width"/>
+        <xs:attribute name="wraplength"/>
     </xs:complexType>
     <xs:complexType name="InnerMenu">
         <xs:choice>
@@ -513,8 +650,16 @@
                 <xs:attribute name="image" type="xs:anyURI"/>
                 <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="overrelief"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="repeatdelay"/>
                 <xs:attribute name="repeatinterval"/>
@@ -596,8 +741,16 @@
                 <xs:attribute name="offvalue"/>
                 <xs:attribute name="onvalue"/>
                 <xs:attribute name="overrelief"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="selectcolor"/>
                 <xs:attribute name="selectimage"/>
@@ -676,8 +829,16 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="visual"/>
                 <xs:attribute name="width"/>
@@ -709,8 +870,16 @@
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="image" type="xs:anyURI"/>
                 <xs:attribute name="justify" type="Justify"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="state" type="State"/>
                 <xs:attribute name="takefocus"/>
@@ -816,8 +985,16 @@
                 <xs:attribute name="indicatoron"/>
                 <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="menu"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="compound" type="Compound"/>
                 <xs:attribute name="state" type="State"/>
@@ -849,8 +1026,16 @@
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
                 <xs:attribute name="justify" type="Justify"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="text"/>
@@ -888,8 +1073,16 @@
                 <xs:attribute name="justify" type="Justify"/>
                 <xs:attribute name="offrelief"/>
                 <xs:attribute name="overrelief"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="selectcolor"/>
                 <xs:attribute name="selectimage"/>
@@ -1005,8 +1198,16 @@
                 <xs:attribute name="insertunfocussed"/>
                 <xs:attribute name="insertwidth"/>
                 <xs:attribute name="maxundo"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="relief" type="Relief"/>
                 <xs:attribute name="selectbackground"/>
                 <xs:attribute name="selectborderwidth"/>
@@ -1109,8 +1310,16 @@
                 <xs:attribute name="highlightbackground"/>
                 <xs:attribute name="highlightcolor"/>
                 <xs:attribute name="highlightthickness"/>
-                <xs:attribute name="padx"/>
-                <xs:attribute name="pady"/>
+                <xs:attribute name="padx">
+                    <xs:annotation>
+                        <xs:documentation>Horizontal padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="pady">
+                    <xs:annotation>
+                        <xs:documentation>Vertical padding of element</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
                 <xs:attribute name="takefocus"/>
                 <xs:attribute name="visual"/>
                 <xs:attribute name="width"/>

@@ -21,5 +21,5 @@ if __name__ == '__main__':
             display.set("")
 
     app = XMLTK.parse("modern_calculator.xml", {"insert": insert, "clear": clear, "equals": equals } )
-    display = app.Variables["display"]
+    display = app.getVariable("display")
     app.mainloop()

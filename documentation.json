@@ -1,0 +1,35 @@
+{
+    "cTypes": {
+        "Variable": "Accessible fields to gather input from app. Can be modified.",
+        "Style": "Holders of Widget configurations; can be used with style attribute to apply configuration of this holder",
+        "Font": "Allows to import font from file specified by filepath",
+
+        "Tk": "Main Tkinter window or Toplevel element. It is root element of whole file.",
+
+        "ToolTip": "Text of this element will be applied to the parent widget as tooltip"
+    },
+    "Attribs": {
+        "Variable:name": "Name of Variable",
+        "Variable:value": "Default value of Variable after start",
+
+        "Style:name": "Name of Style holder",
+
+        "Font:path": "Path to font file",
+
+        "Tk:title": "Title text of whole window",
+        "Tk:geometry": "Window size and position, in format of (WIDTH)x(HEIGHT)+(X)+(Y).",
+        "Tk:resizable": "If windows is resizable, in format of 'horizontal vertical' and replaced both values with 'true' or 'false' ",
+        "Tk:icon": "Path to file for displayed icon",
+
+        "RowColumnConfig:index": "Indexes of row/column to be modified. Use space as delimeter for multiple indexes",
+        "RowColumnConfig:minsize": "Minimal size of row/column",
+        "RowColumnConfig:pad": "Padding of each row/column",
+        "RowColumnConfig:weight": "Weight of each row/column",
+
+        "Grid:column": "Column index of widget to place in",
+        "Grid:row": "Row index of widget to place in",
+
+        "padx": "Horizontal padding of element",
+        "pady": "Vertical padding of element"
+    }
+}

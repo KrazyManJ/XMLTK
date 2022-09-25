@@ -1,11 +1,8 @@
 import inspect
 import xml.etree.ElementTree as XML
-from xml.etree.ElementTree import Element as XMLElement
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import Tk, Widget, Variable, PhotoImage, Menu, Toplevel
-from dataclasses import dataclass
-from typing import Callable
 from uuid import uuid4
 from warnings import warn
 from pyglet.font import add_file as add_font_file
@@ -18,17 +15,24 @@ class ParseType(Enum):
     TOPLEVEL = Toplevel
 
 
-@dataclass(frozen=True)
 class XmlTk:
-    Win: Tk | Toplevel
-    Variables: dict[str, Variable]
-    __IDWidgets: dict[str, Widget]
+    def __init__(self, win, variables, idwidgets):
+        self.__Win = win
+        self.__Variables = variables
+        self.__IDWidgets = idwidgets
 
-    def mainloop(self, n: int = 0):
-        self.Win.mainloop(n)
+    def mainloop(self, n = 0):
+        self.__Win.mainloop(n)
+
+    def getWindow(self):
+        return self.__Win
+
+    def getVariable(self, name):
+        return self.__Variables.get(name, None)
 
     def getWidgetById(self, wantedId: str) -> Widget | None:
         return self.__IDWidgets.get(wantedId, None)
+
 
 class ToolTip(object):
     def __init__(self, widget, text, showtime=500, **config):
@@ -87,8 +91,7 @@ class XMLSyntaxWarning(Warning):
     __module__ = Warning.__module__
 
 
-def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None], None]] | None = None,
-          parseType=ParseType.TK):
+def parse(filepath, functions=None, parseType=ParseType.TK):
     Win = parseType.value()
 
     WIN_IGNORE_ATTRS = ["title", "geometry", "icon", "resizable"]
@@ -104,9 +107,9 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
         "icon": Win.iconbitmap,
     }
 
-    Variables: dict[str, Variable] = {}
-    IDWidgets: dict[str, Widget] = {}
-    Styles: dict[str, dict[str, any]] = {}
+    Variables = {}
+    IDWidgets = {}
+    Styles = {}
     TStyle = ttk.Style()
 
     if functions is None:
@@ -115,13 +118,13 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
     def XMLSyntaxWarn(text):
         warn(text, category=XMLSyntaxWarning, stacklevel=inspect.stack().__len__())
 
-    def clearNamespace(tag: str):
+    def clearNamespace(tag):
         return tag.split("}")[1] if tag.__contains__("}") else tag
 
-    def widgetName(widget: Widget | Tk):
+    def widgetName(widget):
         return widget.widgetName if isinstance(widget, Widget) else "tk"
 
-    def gridPackPlace(widget: Widget, parent: Widget, e: XMLElement):
+    def gridPackPlace(widget, parent, e):
         placer = None
         try:
             placer = [chi for chi in e if clearNamespace(chi.tag) in PLACE_TAGS][0]
@@ -135,7 +138,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
         for ch in [ch for ch in e if clearNamespace(ch.tag) in GRID_CONFIGURATORS.keys()]:
             getattr(widget, GRID_CONFIGURATORS[clearNamespace(ch.tag)])(**ch.attrib)
 
-    def applyChild(parentelem: Widget | Tk, xmldata: XMLElement):
+    def applyChild(parentelem, xmldata):
         for ch in [ch for ch in xmldata if clearNamespace(ch.tag) not in BLACKLIST_TAGS]:
             tag = clearNamespace(ch.tag)
             if widgetName(parentelem) == "menu":
@@ -167,7 +170,7 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
                     else:
                         applyChild(elem, ch)
 
-    def attrsConvertor(dataDict, widget, fcParse=False) -> dict:
+    def attrsConvertor(dataDict, widget, fcParse=False):
         if "font" in dataDict and dataDict["font"].__contains__(";"):
             dataDict["font"] = tuple(dataDict["font"].split(";", 3))
         if "command" in dataDict and fcParse:
@@ -182,8 +185,8 @@ def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None],
                 del dataDict["command"]
         return dataDict
 
-    def configureWidget(widget: Widget, parent: Widget, xmlelem: XMLElement) -> bool:
-        data: dict[str, any] = xmlelem.attrib
+    def configureWidget(widget, parent, xmlelem):
+        data = xmlelem.attrib
         isTtk = widget.__module__ == "tkinter.ttk"
         if "style" in data:
             for stl in [cls for cls in data["style"].split(" ") if cls in Styles]:
