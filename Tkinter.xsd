@@ -280,6 +280,8 @@
         <xs:complexContent>
             <xs:extension base="BaseWidget">
                 <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                    <xs:element name="rowconfig" type="RowColumnConfig"/>
+                    <xs:element name="columnconfig" type="RowColumnConfig"/>
                     <xs:element name="Variable" type="Variable"/>
                     <xs:element name="Style" type="Style"/>
                     <xs:element name="Font" type="Font"/>
@@ -898,6 +900,7 @@
             <xs:extension base="Packable">
                 <xs:choice>
                     <xs:element name="Line"/>
+                    <xs:element name="Scrollbar" type="Scrollbar"/>
                 </xs:choice>
                 <xs:attribute name="activestyle"/>
                 <xs:attribute name="background"/>

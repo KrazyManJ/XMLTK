@@ -108,7 +108,7 @@ def generate():
     for name, attrs in ENUMS: Xml += xsd_enumeration(name, attrs)
     # TK
     Xml += xsd_extended_type("Tk", "BaseWidget", TK_ATTRS + list(tk.Tk().configure().keys()),
-        f'<xs:sequence maxOccurs="unbounded" minOccurs="0">{xsd_element("Variable","Variable")}{xsd_element("Style","Style")}{xsd_element("Font","Font")}</xs:sequence>'
+        f'<xs:sequence maxOccurs="unbounded" minOccurs="0">{xsd_element("rowconfig","RowColumnConfig")}{xsd_element("columnconfig","RowColumnConfig")}{xsd_element("Variable","Variable")}{xsd_element("Style","Style")}{xsd_element("Font","Font")}</xs:sequence>'
                              )
     # ROW / COLUMN CONFIG
     Xml += xsd_complex_type("RowColumnConfig", ["index"] + list(tk.Button().grid_rowconfigure(index="0").keys()))
@@ -177,7 +177,7 @@ def generate():
         for w in [w for w in wT.__subclasses__() if w.__name__.lower() != "widget"]:
             match w.__name__:
                 case "Listbox":
-                    parent,otherBody = "Packable", '<xs:choice><xs:element name="Line"/></xs:choice>'
+                    parent,otherBody = "Packable", '<xs:choice><xs:element name="Line"/><xs:element name="Scrollbar" type="Scrollbar"/></xs:choice>'
                 case "Menu":
                     parent,otherBody = "InnerMenu", ""
                 case _:

@@ -134,7 +134,7 @@ if __name__ == '__main__':
 - [X] PanedWindow
 - [X] Radiobutton
 - [X] Scale
-- [ ] Scrollbar
+- [X] Scrollbar
 - [X] Spinbox
 - [ ] Text
 - [X] Toplevel
@@ -153,7 +153,7 @@ if __name__ == '__main__':
 - [X] Progressbar
 - [X] Radiobutton
 - [X] Scale
-- [ ] Scrollbar
+- [X] Scrollbar
 - [X] Separator
-- [ ] Sizegrip
+- [X] Sizegrip
 - [ ] Treeview
