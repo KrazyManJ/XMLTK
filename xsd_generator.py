@@ -74,8 +74,9 @@ def generate():
         xml += '</xs:complexType>'
         return xml
 
-    def xsd_element(elemName, elemType):
-        return f'<xs:element name="{elemName}" type="{elemType}"/>'
+    def xsd_element(elemName, elemType=None):
+        t = f'type="{elemType}"' if elemType is not None else ''
+        return f'<xs:element name="{elemName}" {t}/>'
 
     def xsd_attribute(objName,attrName, required=False) -> str:
         required, aType = 'use="required"' if required else "", ""
@@ -177,7 +178,7 @@ def generate():
         for w in [w for w in wT.__subclasses__() if w.__name__.lower() != "widget"]:
             match w.__name__:
                 case "Listbox":
-                    parent,otherBody = "Packable", '<xs:choice><xs:element name="Line"/><xs:element name="Scrollbar" type="Scrollbar"/></xs:choice>'
+                    parent,otherBody = "Packable", f'<xs:choice>{xsd_element("Line")}{xsd_element("Scrollbar","Scrollbar")}{xsd_element("T-Scrollbar","T-Scrollbar")}</xs:choice>'
                 case "Menu":
                     parent,otherBody = "InnerMenu", ""
                 case _:

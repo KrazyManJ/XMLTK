@@ -21,7 +21,7 @@ class XmlTk:
         self.__Variables = variables
         self.__IDWidgets = idwidgets
 
-    def mainloop(self, n = 0):
+    def mainloop(self, n=0):
         self.__Win.mainloop(n)
 
     def getWindow(self):
@@ -124,7 +124,7 @@ def parse(filepath, functions=None, parseType=ParseType.TK):
     def widgetName(widget):
         return widget.widgetName if isinstance(widget, Widget) else "tk"
 
-    def configGrid(widget,e):
+    def configGrid(widget, e):
         for ch in [ch for ch in e if clearNamespace(ch.tag) in GRID_CONFIGURATORS.keys()]:
             getattr(widget, GRID_CONFIGURATORS[clearNamespace(ch.tag)])(**ch.attrib)
 
@@ -139,7 +139,7 @@ def parse(filepath, functions=None, parseType=ParseType.TK):
             getattr(widget, tag)(placer.attrib)
         else:
             widget.pack()
-        configGrid(widget,e)
+        configGrid(widget, e)
 
     def applyChild(parentelem, xmldata):
         for ch in [ch for ch in xmldata if clearNamespace(ch.tag) not in BLACKLIST_TAGS]:
@@ -161,11 +161,11 @@ def parse(filepath, functions=None, parseType=ParseType.TK):
                         menucmd(label=ch.text.strip(), **attrsConvertor(ch.attrib, parentelem, True))
             elif widgetName(parentelem) == "listbox" and tag == "Line":
                 parentelem.insert("end", ch.text if ch.text is not None else "")
-            elif tag in ["Scrollbar","T-Scrollbar"]:
+            elif tag in ["Scrollbar", "T-Scrollbar"]:
                 scrl = tk.Scrollbar() if tag == "Scrollbar" else ttk.Scrollbar()
                 scrl.config(command=parentelem.yview)
                 parentelem.configure(yscrollcommand=scrl.set)
-                gridPackPlace(scrl,parentelem.winfo_parent(),ch)
+                gridPackPlace(scrl, parentelem.winfo_parent(), ch)
 
             else:
                 if tag.startswith("T-"):
@@ -227,7 +227,9 @@ def parse(filepath, functions=None, parseType=ParseType.TK):
             gridPackPlace(widget, parent, xmlelem)
 
         count = [ch for ch in xmlelem if clearNamespace(ch.tag) not in PLACE_TAGS + ["ToolTip"]].__len__()
-        if count == 0 and xmlelem.text is not None and xmlelem.text.strip().__len__() != 0:
+        if widgetName(widget) == "text":
+            widget.insert("end", xmlelem.text.strip())
+        elif count == 0 and xmlelem.text is not None and xmlelem.text.strip().__len__() != 0:
             data["text"] = xmlelem.text.strip()
         try:
             tooltip = [ch for ch in xmlelem if clearNamespace(ch.tag) == "ToolTip"][0]
@@ -266,7 +268,7 @@ def parse(filepath, functions=None, parseType=ParseType.TK):
                 Styles[styleName] = attrsConvertor({k: v for k, v in child.attrib.items() if k not in ["name"]}, Win)
                 for w in [x.__name__ for x in ttk.Widget.__subclasses__() if x.__name__.lower() != "widget"]:
                     TStyle.configure(f"{styleName}.T{w}", **Styles[styleName])
-    configGrid(Win,root)
+    configGrid(Win, root)
 
     applyChild(Win, root)
     return XmlTk(Win, Variables, IDWidgets)

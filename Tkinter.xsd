@@ -901,6 +901,7 @@
                 <xs:choice>
                     <xs:element name="Line"/>
                     <xs:element name="Scrollbar" type="Scrollbar"/>
+                    <xs:element name="T-Scrollbar" type="T-Scrollbar"/>
                 </xs:choice>
                 <xs:attribute name="activestyle"/>
                 <xs:attribute name="background"/>
