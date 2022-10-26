@@ -52,8 +52,8 @@ and then use them anywhere in your application
 import XMLTK
 
 #Function to close window
-def button_use(win, elem):
-    win.destroy()
+def button_use(command_holder: XMLTK.CommandHolder):
+    command_holder.Win.destroy()
 
 if __name__ == '__main__':
     app = XMLTK.parse("app.xml",
