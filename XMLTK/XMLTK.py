@@ -2,6 +2,7 @@ import inspect
 import xml.etree.ElementTree as XML
 import tkinter as tk
 import tkinter.ttk as ttk
+from dataclasses import dataclass
 from tkinter import Tk, Widget, Variable, PhotoImage, Menu, Toplevel
 from uuid import uuid4
 from warnings import warn
@@ -30,7 +31,7 @@ class XmlTk:
     def getVariable(self, name):
         return self.__Variables.get(name, None)
 
-    def getWidgetById(self, wantedId: str) -> Widget | None:
+    def getWidgetById(self, wantedId):
         return self.__IDWidgets.get(wantedId, None)
 
 
@@ -89,6 +90,12 @@ class XMLTKParseException(Exception):
 
 class XMLSyntaxWarning(Warning):
     __module__ = Warning.__module__
+
+@dataclass(frozen=True,eq=True)
+class CommandHolder:
+    Win: Tk | Toplevel
+    Widget: Widget
+    ID: str
 
 
 def parse(filepath, functions=None, parseType=ParseType.TK):
@@ -163,6 +170,7 @@ def parse(filepath, functions=None, parseType=ParseType.TK):
                 parentelem.insert("end", ch.text if ch.text is not None else "")
             elif tag in ["Scrollbar", "T-Scrollbar"]:
                 scrl = tk.Scrollbar() if tag == "Scrollbar" else ttk.Scrollbar()
+                configureWidget(scrl,parentelem,ch)
                 scrl.config(command=parentelem.yview)
                 parentelem.configure(yscrollcommand=scrl.set)
                 gridPackPlace(scrl, parentelem.winfo_parent(), ch)
@@ -185,7 +193,7 @@ def parse(filepath, functions=None, parseType=ParseType.TK):
             fctArgs = cmd[cmd.find("(") + 1:cmd.find(")")] if cmd.__contains__("(") and cmd.__contains__(")") else None
             if fctName in functions:
                 fct = functions[fctName]
-                dataDict["command"] = lambda: fct(Win, widget, fctArgs)
+                dataDict["command"] = lambda: fct(CommandHolder(Win, widget, fctArgs))
             else:
                 XMLSyntaxWarn(f"Invalid function name '{fctName}'!")
                 del dataDict["command"]

@@ -3,23 +3,24 @@ This example of modern calculator app is the same as example before, but with TT
 """
 
 import XMLTK
+from XMLTK import CommandHolder
 
 if __name__ == '__main__':
+    def insert(command_holder: CommandHolder):
+        display.set(str(display.get()) + command_holder.Widget.configure()["text"][4])
 
-    def insert(win, widget, tid):
-        display.set(str(display.get()) + widget.configure()["text"][4])
 
-
-    def clear(win, widget, tid):
+    def clear(command_holder):
         display.set("")
 
 
-    def equals(win, widget, tid):
+    def equals(command_holder: CommandHolder):
         try:
             display.set(eval(display.get()))
         except:
             display.set("")
 
-    app = XMLTK.parse("modern_calculator.xml", {"insert": insert, "clear": clear, "equals": equals } )
+
+    app = XMLTK.parse("modern_calculator.xml", {"insert": insert, "clear": clear, "equals": equals})
     display = app.getVariable("display")
     app.mainloop()

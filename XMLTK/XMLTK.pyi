@@ -3,7 +3,7 @@ from tkinter import Tk, Widget, Toplevel, Variable
 from typing import Callable
 
 
-def parse(filepath: str, functions: dict[str, Callable[[Tk, Widget, str | None], None]] | None = ...,
+def parse(filepath: str, functions: dict[str, Callable[[CommandHolder], None]] | None = ...,
           parseType: ParseType = ...) -> XmlTk: ...
 
 
@@ -11,6 +11,10 @@ class ParseType(Enum):
     TK = ...
     TOPLEVEL = ...
 
+class CommandHolder:
+    Win: Tk | Toplevel
+    Widget: Widget
+    ID: str
 
 class XmlTk:
     """

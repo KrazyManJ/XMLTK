@@ -9,17 +9,18 @@ This example of calculator app uses all unusual ascpets/syntax that XMLTK offers
 """
 
 import XMLTK
+from XMLTK import CommandHolder
 
 if __name__ == '__main__':
-    def insert(win, widget, args):
-        display.set(str(display.get()) + widget.configure()["text"][4])
+    def insert(command_holder: CommandHolder):
+        display.set(str(display.get()) + command_holder.Widget.configure()["text"][4])
 
 
-    def clear(win, widget, tid):
+    def clear(command_holder):
         display.set("")
 
 
-    def equals(win, widget, tid):
+    def equals(command_holder: CommandHolder):
         try:
             display.set(eval(display.get()))
         except:
