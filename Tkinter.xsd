@@ -307,6 +307,7 @@
                     </xs:annotation>
                 </xs:attribute>
                 <xs:attribute name="xmlns"/>
+                <xs:attribute name="targetNamespace"/>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="class"/>
