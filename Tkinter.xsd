@@ -1,4 +1,4 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="Tkinter" targetNamespace="Tkinter" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="Tkinter" targetNamespace="Tkinter">
     <xs:element name="Tk" type="Tk"/>
     <xs:complexType name="Variable">
         <xs:annotation>
@@ -306,8 +306,6 @@
                         <xs:documentation>Path to file for displayed icon</xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="xmlns"/>
-                <xs:attribute name="targetNamespace"/>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="class"/>

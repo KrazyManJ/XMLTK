@@ -9,11 +9,9 @@ def generate():
         xmlns:xs="http://www.w3.org/2001/XMLSchema" 
         xmlns="Tkinter" 
         targetNamespace="Tkinter"
-        elementFormDefault="qualified" 
-        attributeFormDefault="unqualified"
     >'''.replace("\n"," ")
     FOOT = '</xs:schema>'
-    TK_ATTRS = ["title", "geometry", "resizable", "icon", "xmlns", "targetNamespace"]
+    TK_ATTRS = ["title", "geometry", "resizable", "icon"]
     ENUMS = [
         ("State", ["normal", "active", "disabled", "readonly"]),
         ("Default", ["normal", "active", "disabled"]),
