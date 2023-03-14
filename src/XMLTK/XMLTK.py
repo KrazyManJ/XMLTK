@@ -48,7 +48,7 @@ class XMLSyntaxWarning(Warning):
 def parse(filepath, commands=None, parseType=ParseType.TK, events=None):
     Win = parseType.value()
 
-    WIN_IGNORE_ATTRS = ["title", "geometry", "icon", "resizable"]
+    WIN_IGNORE_ATTRS = ["title", "geometry", "icon", "resizable", "schemaLocation"]
     PLACE_TAGS = ["pack", "grid", "place"]
     GRID_CONFIGURATORS = {
         "rowconfig": Widget.rowconfigure.__name__,
@@ -209,7 +209,7 @@ def parse(filepath, commands=None, parseType=ParseType.TK, events=None):
         values = root.attrib["resizable"].split(" ", 2)
         Win.resizable(values[0].lower() == "true", values[1].lower() == "true")
 
-    Win.configure({k: v for k, v in root.attrib.items() if k not in WIN_IGNORE_ATTRS})
+    Win.configure({k: v for k, v in root.attrib.items() if clearNamespace(k) not in WIN_IGNORE_ATTRS})
 
     for child in root:
         childTag = clearNamespace(child.tag)

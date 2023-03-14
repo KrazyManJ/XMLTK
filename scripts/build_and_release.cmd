@@ -1,0 +1,2 @@
+build.cmd
+release.cmd

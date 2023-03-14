@@ -48,18 +48,22 @@ and then use them anywhere in your application
 </Tk>
 ```
 `main.py`
-```python
-import XMLTK
 
-#Function to close window
+```python
+
+from src import XMLTK
+
+
+# Function to close window
 def button_use(command_holder: XMLTK.CommandHolder):
     command_holder.Win.destroy()
 
+
 if __name__ == '__main__':
     app = XMLTK.parse("app.xml",
-      { "close": button_use } # Adding function to click on close command 
-    )
-    app.mainloop() # To run app
+                      {"close": button_use}  # Adding function to click on close command 
+                      )
+    app.mainloop()  # To run app
 ```
 
 ## Syntax comparison with already existing tkinter xml package - Pygubu
@@ -104,7 +108,7 @@ if __name__ == '__main__':
 `XMLTK syntax`
 
 ```xml
-<Tk xmlns="Tkinter" geometry="200x200" title="Hello World App">
+<Tk geometry="200x200" title="Hello World App">
     <T-Frame height="200" width="200" padding="20">
         <T-Label anchor="center" font="Helvetica 26" foreground="#0000b8">
             Hello World !
@@ -112,6 +116,20 @@ if __name__ == '__main__':
         </T-Label>
         <pack expand="true" side="top"/>
     </T-Frame>
+</Tk>
+```
+
+## Usage of Schema
+
+If you use [PyCharm](https://www.jetbrains.com/pycharm/) IDE, from now on you can use schema for writing xml with
+hints provided by it. You can apply schema via this xml code:
+
+```xml
+<Tk xmlns="Tkinter" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="Tkinter https://raw.githubusercontent.com/KrazyManJ/XMLTK/master/schema/Tkinter.xsd"
+    title="App Based On URL Schema" resizable="false false"
+>
+    <!--  inner xml code  -->
 </Tk>
 ```
 

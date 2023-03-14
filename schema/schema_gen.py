@@ -7,7 +7,7 @@ from lxml import etree
 def generate():
     HEAD = '''<xs:schema 
         xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-        xmlns="Tkinter" 
+        targetNamespace="Tkinter" 
     >'''.replace("\n"," ")
     FOOT = '</xs:schema>'
     TK_ATTRS = ["title", "geometry", "resizable", "icon"]
@@ -191,7 +191,7 @@ def generate():
             else:
                 Xml += xsd_complex_type(f"{prefix}{w.__name__}",list(w().configure().keys()) + ["id", "style"])
 
-    return etree.tostring(etree.fromstring(Xml + FOOT), pretty_print=True).decode().replace("  ", "    ")
+    return etree.tostring(etree.fromstring(Xml + FOOT), pretty_print=True, xml_declaration=True, encoding="UTF-8").decode().replace("  ", "    ")
 
 
 open("Tkinter.xsd", "w").write(generate())

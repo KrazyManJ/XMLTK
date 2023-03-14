@@ -8,8 +8,8 @@ This example of calculator app uses all unusual ascpets/syntax that XMLTK offers
 
 """
 
-import XMLTK
-from XMLTK import CommandHolder
+from src import XMLTK
+from src.XMLTK import CommandHolder
 
 if __name__ == '__main__':
     def insert(command_holder: CommandHolder):

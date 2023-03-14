@@ -1,7 +1,7 @@
 from enum import Enum
 from tkinter import Variable
 from typing import Callable
-from .holders import *
+from src.XMLTK.holders import *
 
 def parse(filepath: str, functions: dict[str, Callable[[CommandHolder], None]] | None = ...,
           parseType: ParseType = ...,events: dict[str,Callable[[any],None]] = ...) -> XmlTk: ...

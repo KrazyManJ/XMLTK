@@ -1,4 +1,10 @@
-<Tk xmlns="Tkinter" title="Calculator" geometry="300x400" bg="#343845" resizable="false false">
+<Tk xmlns="Tkinter"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="Tkinter https://raw.githubusercontent.com/KrazyManJ/XMLTK/master/schema/Tkinter.xsd"
+    title="Calculator"
+    geometry="300x400"
+    bg="#343845"
+    resizable="false false">
 
     <Variable name="display"/>
 
@@ -24,7 +30,7 @@
         <Button style="button">5<grid row="2" column="1" sticky="NESW" padx="5" pady="5"/></Button>
         <Button style="button">6<grid row="2" column="2" sticky="NESW" padx="5" pady="5"/></Button>
         <Button style="button">+<grid row="2" column="3" sticky="NESW" padx="5" pady="5"/></Button>
-        
+
         <Button style="button">1<grid row="3" column="0" sticky="NESW" padx="5" pady="5"/></Button>
         <Button style="button">2<grid row="3" column="1" sticky="NESW" padx="5" pady="5"/></Button>
         <Button style="button">3<grid row="3" column="2" sticky="NESW" padx="5" pady="5"/></Button>

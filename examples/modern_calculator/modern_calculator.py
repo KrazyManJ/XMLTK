@@ -2,8 +2,8 @@
 This example of modern calculator app is the same as example before, but with TTK Elements
 """
 
-import XMLTK
-from XMLTK import CommandHolder
+from src import XMLTK
+from src.XMLTK import CommandHolder
 
 if __name__ == '__main__':
     def insert(command_holder: CommandHolder):

@@ -1,4 +1,7 @@
-<Tk xmlns="Tkinter" geometry="300x200" title="Hello World App"> <!--only changed geometry due to size of font-->
+<Tk xmlns="Tkinter"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="Tkinter https://raw.githubusercontent.com/KrazyManJ/XMLTK/master/schema/Tkinter.xsd"
+    geometry="300x200" title="Hello World App"> <!--only changed geometry due to size of font-->
     <T-Frame height="200" width="200" padding="20">
         <T-Label anchor="center" font="Helvetica 26" foreground="#0000b8">
             Hello World !
