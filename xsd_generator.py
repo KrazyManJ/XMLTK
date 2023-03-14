@@ -13,7 +13,7 @@ def generate():
         attributeFormDefault="unqualified"
     >'''.replace("\n"," ")
     FOOT = '</xs:schema>'
-    TK_ATTRS = ["title", "geometry", "resizable", "icon"]
+    TK_ATTRS = ["title", "geometry", "resizable", "icon", "xmlns"]
     ENUMS = [
         ("State", ["normal", "active", "disabled", "readonly"]),
         ("Default", ["normal", "active", "disabled"]),

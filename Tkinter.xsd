@@ -306,6 +306,7 @@
                         <xs:documentation>Path to file for displayed icon</xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
+                <xs:attribute name="xmlns"/>
                 <xs:attribute name="bd"/>
                 <xs:attribute name="borderwidth"/>
                 <xs:attribute name="class"/>
