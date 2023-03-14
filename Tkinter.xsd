@@ -1,4 +1,4 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="Tkinter" targetNamespace="Tkinter">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="Tkinter">
     <xs:element name="Tk" type="Tk"/>
     <xs:complexType name="Variable">
         <xs:annotation>
