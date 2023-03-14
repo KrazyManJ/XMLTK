@@ -5,7 +5,7 @@ from lxml import etree
 
 
 def generate():
-    HEAD = '<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">'
+    HEAD = '<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3schools.com">'
     FOOT = '</xs:schema>'
     TK_ATTRS = ["title", "geometry", "resizable", "icon"]
     ENUMS = [
