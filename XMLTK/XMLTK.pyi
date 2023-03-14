@@ -1,20 +1,15 @@
 from enum import Enum
-from tkinter import Tk, Widget, Toplevel, Variable
+from tkinter import Variable
 from typing import Callable
-
+from .holders import *
 
 def parse(filepath: str, functions: dict[str, Callable[[CommandHolder], None]] | None = ...,
-          parseType: ParseType = ...) -> XmlTk: ...
+          parseType: ParseType = ...,events: dict[str,Callable[[any],None]] = ...) -> XmlTk: ...
 
 
 class ParseType(Enum):
     TK = ...
     TOPLEVEL = ...
-
-class CommandHolder:
-    Win: Tk | Toplevel
-    Widget: Widget
-    ID: str
 
 class XmlTk:
     """

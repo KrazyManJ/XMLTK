@@ -2,12 +2,13 @@ import inspect
 import xml.etree.ElementTree as XML
 import tkinter as tk
 import tkinter.ttk as ttk
-from dataclasses import dataclass
-from tkinter import Tk, Widget, Variable, PhotoImage, Menu, Toplevel
+from tkinter import Variable, PhotoImage, Menu
 from uuid import uuid4
 from warnings import warn
 from pyglet.font import add_file as add_font_file
 from enum import Enum
+from .holders import *
+from .tooltip import ToolTip
 import re
 
 
@@ -35,55 +36,6 @@ class XmlTk:
         return self.__IDWidgets.get(wantedId, None)
 
 
-class ToolTip(object):
-    def __init__(self, widget, text, showtime=500, **config):
-        self.showtime = showtime
-        self.widget = widget
-        self.text = text
-        self.labelconfig = config
-        self.widget.bind("<Enter>", self.enter)
-        self.widget.bind("<Leave>", self.leave)
-        self.widget.bind("<ButtonPress>", self.leave)
-        self.id = None
-        self.tw = None
-
-    def enter(self, event=None):
-        self.schedule()
-
-    def leave(self, event=None):
-        self.unschedule()
-        self.hidetip()
-
-    def schedule(self):
-        self.unschedule()
-        self.id = self.widget.after(self.showtime, self.showtip)
-
-    def unschedule(self):
-        tempId = self.id
-        self.id = None
-        if tempId:
-            self.widget.after_cancel(tempId)
-
-    def showtip(self, event=None):
-        x = y = 0
-        x, y, cx, cy = self.widget.bbox("insert")
-        x += self.widget.winfo_pointerx()
-        y += self.widget.winfo_rooty() + self.widget.winfo_height()
-        self.tw = tk.Toplevel(self.widget)
-        self.tw.wm_overrideredirect(True)
-        self.tw.wm_geometry("+%d+%d" % (x, y))
-        label = tk.Label(self.tw, text=self.text, justify='left', bg="#ffffff", relief='solid', borderwidth=1,
-                         wraplength=180)
-        label.configure(**self.labelconfig)
-        label.pack(ipadx=1)
-
-    def hidetip(self):
-        tw = self.tw
-        self.tw = None
-        if tw:
-            tw.destroy()
-
-
 class XMLTKParseException(Exception):
     __module__ = Exception.__module__
 
@@ -91,14 +43,9 @@ class XMLTKParseException(Exception):
 class XMLSyntaxWarning(Warning):
     __module__ = Warning.__module__
 
-@dataclass(frozen=True,eq=True)
-class CommandHolder:
-    Win: Tk | Toplevel
-    Widget: Widget
-    ID: str
 
 
-def parse(filepath, functions=None, parseType=ParseType.TK):
+def parse(filepath, commands=None, parseType=ParseType.TK, events=None):
     Win = parseType.value()
 
     WIN_IGNORE_ATTRS = ["title", "geometry", "icon", "resizable"]
@@ -119,8 +66,10 @@ def parse(filepath, functions=None, parseType=ParseType.TK):
     Styles = {}
     TStyle = ttk.Style()
 
-    if functions is None:
-        functions = {}
+    if commands is None:
+        commands = {}
+    if events is None:
+        events = {}
 
     def XMLSyntaxWarn(text):
         warn(text, category=XMLSyntaxWarning, stacklevel=inspect.stack().__len__())
@@ -191,8 +140,8 @@ def parse(filepath, functions=None, parseType=ParseType.TK):
             cmd: str = dataDict["command"]
             fctName = cmd.split("(")[0]
             fctArgs = cmd[cmd.find("(") + 1:cmd.find(")")] if cmd.__contains__("(") and cmd.__contains__(")") else None
-            if fctName in functions:
-                fct = functions[fctName]
+            if fctName in commands:
+                fct = commands[fctName]
                 dataDict["command"] = lambda: fct(CommandHolder(Win, widget, fctArgs))
             else:
                 XMLSyntaxWarn(f"Invalid function name '{fctName}'!")
